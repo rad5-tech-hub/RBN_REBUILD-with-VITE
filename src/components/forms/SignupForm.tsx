@@ -220,7 +220,6 @@ export default function SignupForm() {
       const successResult = result as SignUpResponse;
 
       const referralLink = successResult.data.referralLink!;
-      console.log("Saving referral link:", referralLink);
       localStorage.setItem("rbn_referral_link", referralLink);
       
 

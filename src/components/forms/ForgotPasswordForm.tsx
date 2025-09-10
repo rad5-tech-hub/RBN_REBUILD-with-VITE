@@ -54,10 +54,9 @@ export default function ForgotPasswordForm() {
         }
       );
 
-      console.log("Response status:", response.status, response.statusText);
 
       const data = await response.json();
-      console.log("API Response:", data);
+      
 
       if (!response.ok) {
         const errorMessage =

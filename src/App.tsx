@@ -15,6 +15,10 @@ import AdminDashboard from "./components/admin/AdminDashboard";
 import AdminDashboardHome from "./components/admin/AdminDashboardHome";
 import AdminDashboardAgents from "./components/admin/AdminDashboardAgents";
 import AdminDashboardUsers from "./components/admin/AdminDashboardUsers";
+import AdminDashboardCreateAdmin from "./components/admin/AdminDashboardCreateAdmin";
+import AdminDashboardWithdrawals from "./components/admin/AdminDashboardWithdrawals";
+import AdminDashboardCreateCourse from "./components/admin/AdminDashboardCreateCourse";
+import AdminDashboardManageCourses from "./components/admin/AdminDashboardManageCourses";
 function App() {
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
@@ -95,6 +99,47 @@ function App() {
                 </>
               }
             />
+
+            
+            <Route
+              path="create-admin"
+              element={
+                <>
+                  <AdminDashboardCreateAdmin />
+                </>
+              }
+            />
+
+             <Route
+              path="withdrawals"
+              element={
+                <>
+                  <AdminDashboardWithdrawals />
+                </>
+              }
+            />
+
+             <Route
+              path="create-course"
+              element={
+                <>
+                  <AdminDashboardCreateCourse />
+                </>
+              }
+            />
+
+             <Route
+              path="manage-courses"
+              element={
+                <>
+                  <AdminDashboardManageCourses />
+                </>
+              }
+            />
+
+            
+
+
           </Route>
         </Routes>
       </BrowserRouter>

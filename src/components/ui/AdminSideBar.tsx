@@ -96,8 +96,8 @@ export default function AdminSidebar({
             src={Logo}
             alt="RAD5_Logo"
             width={100}
-            height={100}
-            className="w-auto h-auto"
+            // height={100}
+            // className="w-auto h-auto"
           />
           <h1 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mt-2">
             Admin Dashboard

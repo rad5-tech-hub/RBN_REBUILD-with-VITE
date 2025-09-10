@@ -127,7 +127,7 @@ export default function LandingPageClient() {
       setIsLoading(true);
       try {
         const response = await fetch(
-          "https://rbn.bookbank.com.ng/api/v1/course/courses",
+          `${import.meta.env.VITE_BASE_URL}/course/courses`,
           {
             headers: {
               Accept: "application/json",

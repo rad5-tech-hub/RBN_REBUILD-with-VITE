@@ -278,7 +278,7 @@ export default function EarningsAndWithdrawals() {
 
     const fetchWithdrawalHistory = async () => {
       try {
-        const apiBaseUrl = "https://rbn.bookbank.com.ng/api/v1";
+        const apiBaseUrl = `${import.meta.env.VITE_BASE_URL}`
         const token = localStorage.getItem("rbn_token");
         const agentId =
           dashboardData?.agent.id ||
@@ -375,7 +375,7 @@ export default function EarningsAndWithdrawals() {
   const handleSubmit = async (values: WithdrawalFormValues) => {
     setSubmitting(true);
     try {
-      const apiBaseUrl = "https://rbn.bookbank.com.ng/api/v1";
+      const apiBaseUrl = `${import.meta.env.VITE_BASE_URL}`
       const token = localStorage.getItem("rbn_token");
       if (!token) {
         throw new Error("No authentication token found. Please sign in.");
@@ -386,10 +386,7 @@ export default function EarningsAndWithdrawals() {
       }
 
       const description = `Withdrawal request for ₦${values.amount}`;
-      console.log("Submitting withdrawal request:", {
-        ...values,
-        description,
-      });
+  
 
       const response = await fetch(`${apiBaseUrl}/withdrawal/request`, {
         method: "POST",
@@ -404,11 +401,7 @@ export default function EarningsAndWithdrawals() {
         }),
       });
 
-      console.log(
-        "Withdrawal Response status:",
-        response.status,
-        response.statusText
-      );
+    
       if (!response.ok) {
         const errorResult = (await response.json()) as ErrorResponse;
         throw new Error(
@@ -419,7 +412,6 @@ export default function EarningsAndWithdrawals() {
       }
 
       const data: WithdrawalResponse = await response.json();
-      console.log("Withdrawal API Response:", data);
 
       toast.success(data.message || "Withdrawal request submitted!", {
         duration: 3000,
