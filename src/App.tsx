@@ -9,7 +9,10 @@ import AgentDashboardHome from "./components/agent/AgentDashboardHome";
 import AgentDashBoardReferrals from "./components/agent/AgentDashboardReferrals";
 import AgentDashBoardEarningAndWithdrawals from "./components/agent/AgentDashBoardEarningAndWithdrawals";
 import Admin from "./pages/Admin";
-
+import ForgotPasswordForm from "./components/forms/ForgotPasswordForm";
+import ProtectedAdminRoute from "./components/auth/ProtectedAdminRoute";
+import AdminDashboard from "./components/admin/AdminDashboard";
+import AdminDashboardHome from "./components/admin/AdminDashboardHome";
 function App() {
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
@@ -18,8 +21,9 @@ function App() {
           <Route path="/" element={<LandingPageClient />} />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
-          <Route path="/admin" element={<Admin/>} />
 
+          <Route path="/forgot-password" element={<ForgotPasswordForm />} />
+          <Route path="/register/agent" />
 
           {/* Agent Dashboard route */}
           <Route
@@ -33,12 +37,11 @@ function App() {
             {/* index = /agent-dashboard */}
             <Route index element={<AgentDashboardHome />} />
 
-            
             <Route
               path="referrals"
               element={
                 <>
-                  <AgentDashBoardReferrals/>
+                  <AgentDashBoardReferrals />
                 </>
               }
             />
@@ -47,15 +50,32 @@ function App() {
               path="earnings-and-withdrawals"
               element={
                 <>
-                  <AgentDashBoardEarningAndWithdrawals/>
+                  <AgentDashBoardEarningAndWithdrawals />
                 </>
               }
             />
-           
           </Route>
 
+          {/* Admin Dashboard Route  */}
+          <Route path="/admin" element={<Admin />} />
 
-          <Route path="/register/agent"/>
+          <Route
+            path="/admin"
+            element={
+              <ProtectedAdminRoute>
+                <AdminDashboard />
+              </ProtectedAdminRoute>
+            }
+          >
+            <Route
+              path="dashboard"
+              element={
+                <>
+                  <AdminDashboardHome />
+                </>
+              }
+            />
+          </Route>
         </Routes>
       </BrowserRouter>
     </ThemeProvider>
