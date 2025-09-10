@@ -9,7 +9,7 @@ export default  {
     "./src/**/*.ts",
     "./src/**/*.tsx",
   ],
-  darkMode: ["media", "class"],
+  darkMode: "class",
   theme: {
   	extend: {
   		borderRadius: {

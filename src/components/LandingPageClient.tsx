@@ -512,7 +512,7 @@ export default function LandingPageClient() {
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 viewport={{ once: true }}
               >
-                <Card className="p-4 sm:p-6 bg-white dark:bg-gray-800">
+                <Card className="border-white border-2 p-4 sm:p-6 bg-white dark:bg-gray-800">
                   <CardHeader>
                     <CardTitle className="text-lg sm:text-xl">
                       {course.courseName}
