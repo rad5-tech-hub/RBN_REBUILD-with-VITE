@@ -6,31 +6,43 @@ import SignUp from "./pages/SignUp";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import AgentDashboard from "./pages/AgentDashboard";
 import AgentDashboardHome from "./components/agent/AgentDashboardHome";
+import AgentDashBoardReferrals from "./components/agent/AgentDashboardReferrals";
+
 function App() {
   return (
-    <>
-      <ThemeProvider attribute={"class"} defaultTheme="system" enableSystem>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<LandingPageClient />} />
-            <Route path="/signin" element={<SignIn />} />
-            <Route path="/signup" element={<SignUp />} />
+    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<LandingPageClient />} />
+          <Route path="/signin" element={<SignIn />} />
+          <Route path="/signup" element={<SignUp />} />
 
-            {/* Admin Dashbaord  */}
+          {/* Parent route */}
+          <Route
+            path="/agent-dashboard"
+            element={
+              <ProtectedRoute>
+                <AgentDashboard />
+              </ProtectedRoute>
+            }
+          >
+            {/* index = /agent-dashboard */}
+            <Route index element={<AgentDashboardHome />} />
+
+            {/* nested route = /agent-dashboard/hello */}
             <Route
-              path="/agent-dashboard"
+              path="referrals"
               element={
-                <ProtectedRoute>
-                  <AgentDashboard>
-                    <AgentDashboardHome/>
-                  </AgentDashboard>
-                </ProtectedRoute>
+                <>
+                  <AgentDashBoardReferrals/>
+                </>
               }
             />
-          </Routes>
-        </BrowserRouter>
-      </ThemeProvider>
-    </>
+           
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }
 

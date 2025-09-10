@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { toast, Toaster } from "react-hot-toast";
 import Sidebar from "../components/ui/sidebar"; // Adjust path if needed
 import { useTheme } from "next-themes"; // For theme support
-
+import { Outlet } from "react-router-dom";
 interface ReferredUser {
   id: string;
   fullName: string;
@@ -183,7 +183,7 @@ const AgentDashboard: React.FC<AgentDashboardProps> = ({ children }) => {
         />
         <div className="flex-1 p-4  transition-all duration-300 max-w-full overflow-x-hidden">
           
-          {!loading && !error && children}
+          {!loading && !error && <Outlet/>}
         </div>
       </div>
     </div>
