@@ -21,6 +21,7 @@ import AdminDashboardCreateCourse from "./components/admin/AdminDashboardCreateC
 import AdminDashboardManageCourses from "./components/admin/AdminDashboardManageCourses";
 import { AdminSidebarProvider } from "./components/admin/AdminSidebarContext";
 import { AgentSidebarProvider } from "./components/agent/AgentSidebarContext";
+import RegisterPage from "./pages/RegisterPage";
 function App() {
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
@@ -31,7 +32,7 @@ function App() {
           <Route path="/signup" element={<SignUp />} />
 
           <Route path="/forgot-password" element={<ForgotPasswordForm />} />
-          <Route path="/register/agent" />
+          <Route path="/register/agent/:id" element={ <RegisterPage />}/>
 
           {/* Agent Dashboard route */}
           <Route
