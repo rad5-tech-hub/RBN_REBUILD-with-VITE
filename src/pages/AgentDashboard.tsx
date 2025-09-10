@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { toast, Toaster } from "react-hot-toast";
 import Sidebar from "../components/ui/sidebar"; // Adjust path if needed
-import { useTheme } from "next-themes"; // For theme support
+
 import { Outlet } from "react-router-dom";
 interface ReferredUser {
   id: string;
@@ -60,24 +60,24 @@ export interface ErrorResponse {
   error?: string;
 }
 
-interface SidebarProps {
-  isOpen: boolean;
-  toggleSidebar: () => void;
-  profileImage: string;
-  agentName: string;
-}
+// interface SidebarProps {
+//   isOpen: boolean;
+//   toggleSidebar: () => void;
+//   profileImage: string;
+//   agentName: string;
+// }
 
 interface AgentDashboardProps {
   children?: React.ReactNode;
 }
 
-const AgentDashboard: React.FC<AgentDashboardProps> = ({ children }) => {
+const AgentDashboard: React.FC<AgentDashboardProps> = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [dashboardData, setDashboardData] = useState<DashboardResponse | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const mounted = useRef(true);
-  const { theme } = useTheme(); // For theme consistency
+  
 
   useEffect(() => {
     mounted.current = true;

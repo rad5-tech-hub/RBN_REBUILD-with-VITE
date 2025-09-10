@@ -1,4 +1,4 @@
-"use client";
+  ;
 
 import { useState } from "react";
 import Logo from "../../assets/images/rad5hub.png"

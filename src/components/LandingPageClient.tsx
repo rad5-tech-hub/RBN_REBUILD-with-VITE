@@ -1,4 +1,4 @@
-"use client";
+
 import Logo from "../assets/images/rad5hub.png"
 import { useState, useEffect } from "react";
 import { Button } from "../components/ui/button";

@@ -13,6 +13,8 @@ import ForgotPasswordForm from "./components/forms/ForgotPasswordForm";
 import ProtectedAdminRoute from "./components/auth/ProtectedAdminRoute";
 import AdminDashboard from "./components/admin/AdminDashboard";
 import AdminDashboardHome from "./components/admin/AdminDashboardHome";
+import AdminDashboardAgents from "./components/admin/AdminDashboardAgents";
+import AdminDashboardUsers from "./components/admin/AdminDashboardUsers";
 function App() {
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
@@ -72,6 +74,24 @@ function App() {
               element={
                 <>
                   <AdminDashboardHome />
+                </>
+              }
+            />
+
+            <Route
+              path="agents"
+              element={
+                <>
+                  <AdminDashboardAgents />
+                </>
+              }
+            />
+
+            <Route
+              path="users"
+              element={
+                <>
+                  <AdminDashboardUsers />
                 </>
               }
             />
