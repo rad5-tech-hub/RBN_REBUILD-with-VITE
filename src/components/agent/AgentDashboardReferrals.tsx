@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { toast } from "sonner";
+import { toast } from "react-hot-toast";
 import Sidebar from "../ui/sidebar";
 import ReferralLinkSection from "../referrals/ReferralLinkSection";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
@@ -238,19 +238,12 @@ export default function AgentDashBoardReferrals() {
 
   return (
     <div className="flex min-h-screen bg-gray-100 dark:bg-gray-900">
-      <Sidebar
-        isOpen={isSidebarOpen}
-        toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
-        profileImage={
-          dashboardData?.agent.profileImage ?? "/default-avatar.png"
-        }
-        imagePreview={null} // No image upload functionality here, so set to null
-        agentName={dashboardData?.agent.fullName ?? "Agent"}
-      />
       <div className="flex-1 p-2 sm:p-4 md:p-6 lg:ml-64 max-w-full min-w-[300px] mx-auto transition-all duration-300">
         <button
           className="lg:hidden mb-2 p-2 bg-gray-800 text-white rounded-md min-w-10 min-h-10"
-          onClick={() => setIsSidebarOpen(true)}
+          onClick={() => {
+            toast.error("Add context to handle sidebar")            
+          }}
           aria-label="Toggle sidebar"
         >
           <RiMenu2Line className="h-6 w-6" />

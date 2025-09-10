@@ -7,6 +7,8 @@ import ProtectedRoute from "./components/auth/ProtectedRoute";
 import AgentDashboard from "./pages/AgentDashboard";
 import AgentDashboardHome from "./components/agent/AgentDashboardHome";
 import AgentDashBoardReferrals from "./components/agent/AgentDashboardReferrals";
+import AgentDashBoardEarningAndWithdrawals from "./components/agent/AgentDashBoardEarningAndWithdrawals";
+import Admin from "./pages/Admin";
 
 function App() {
   return (
@@ -16,8 +18,10 @@ function App() {
           <Route path="/" element={<LandingPageClient />} />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
+          <Route path="/admin" element={<Admin/>} />
 
-          {/* Parent route */}
+
+          {/* Agent Dashboard route */}
           <Route
             path="/agent-dashboard"
             element={
@@ -29,7 +33,7 @@ function App() {
             {/* index = /agent-dashboard */}
             <Route index element={<AgentDashboardHome />} />
 
-            {/* nested route = /agent-dashboard/hello */}
+            
             <Route
               path="referrals"
               element={
@@ -38,8 +42,20 @@ function App() {
                 </>
               }
             />
+
+            <Route
+              path="earnings-and-withdrawals"
+              element={
+                <>
+                  <AgentDashBoardEarningAndWithdrawals/>
+                </>
+              }
+            />
            
           </Route>
+
+
+          <Route path="/register/agent"/>
         </Routes>
       </BrowserRouter>
     </ThemeProvider>

@@ -31,6 +31,7 @@ import CountUp from "react-countup";
 import { useInView } from "react-intersection-observer";
 import { toast } from "react-hot-toast";
 import { Toaster } from "react-hot-toast";
+import Loader from "./loader/Loader";
 
 interface Testimonial {
   name: string;
@@ -181,7 +182,9 @@ export default function LandingPageClient() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-[#ffff]/20 dark:bg-gray-900 flex items-center justify-center">
-        <p className="text-gray-800 dark:text-gray-100">Loading...</p>
+        <p className="text-gray-800 dark:text-gray-100">
+          <Loader/>
+        </p>
       </div>
     );
   }
@@ -193,6 +196,8 @@ export default function LandingPageClient() {
         className="fixed inset-0 bg-[#ffff]/20 dark:bg-gray-900 z-0"
         aria-hidden="true"
       />
+
+      
 
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-white/10 dark:bg-gray-800/10 backdrop-blur-lg">
@@ -459,6 +464,8 @@ export default function LandingPageClient() {
         </motion.div>
       </section>
 
+      
+
       {/* Features Section */}
       <section
         id="features"
@@ -676,16 +683,7 @@ export default function LandingPageClient() {
         }}
       />
 
-      <style>{`
-        @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap");
-        .font-poppins {
-          font-family: "Poppins", sans-serif;
-        }
-        .bg-circuit-pattern {
-          background-image: url("data:image/svg+xml;utf8,%3Csvg%20width=%22100%22%20height=%22100%22%20viewBox=%220%200%20100%20100%22%20fill=%22none%22%20stroke=%22%23000000%22%20stroke-width=%221%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20d=%22M10%2010h80M10%2050h80M10%2090h80M50%2010v80M10%2030h20M70%2030h20M10%2070h20M70%2070h20%22/%3E%3C/svg%3E");
-          background-repeat: repeat;
-        }
-      `}</style>
+    
     </div>
   );
 }

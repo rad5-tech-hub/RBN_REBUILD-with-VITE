@@ -181,7 +181,7 @@ const AgentDashboard: React.FC<AgentDashboardProps> = ({ children }) => {
           profileImage={dashboardData?.agent.profileImage || "/default-avatar.png"}
           agentName={dashboardData?.agent.fullName || "Agent"}
         />
-        <div className="flex-1 p-4  transition-all duration-300 max-w-full overflow-x-hidden">
+        <div className="flex-1   transition-all duration-300 max-w-full overflow-x-hidden">
           
           {!loading && !error && <Outlet/>}
         </div>
