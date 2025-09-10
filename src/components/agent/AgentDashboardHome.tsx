@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
+import ReferralLinkSection from "../referrals/ReferralLinkSection";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Users, CreditCard, Share2 } from "lucide-react";
@@ -6,7 +7,6 @@ import { TbCurrencyNaira } from "react-icons/tb";
 import { RiMenu2Line } from "react-icons/ri";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
-import { Input } from "../ui/input";
 import { Camera } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import {
@@ -18,8 +18,267 @@ import {
   FaEnvelope,
   FaShareAlt,
 } from "react-icons/fa";
+import {
+  type DashboardResponse,
+  type ErrorResponse,
+} from "../../pages/AgentDashboard";
+
+interface ProfileImageResponse {
+  message: string;
+  data: {
+    profileImage: string;
+  };
+}
 
 const AgentDashboardHome = () => {
+  const [dashboardData, setDashboardData] = useState<DashboardResponse | null>(
+    null
+  );
+  const [loading, setLoading] = useState<boolean>(false);
+  const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const mounted = useRef(true);
+
+  //Function to share links
+  const handleShare = async (platform: string | null = null) => {
+    const baseUrl = window.location.hostname;
+    const referralLink = dashboardData?.agent.sharableLink
+      ? `${baseUrl}/register/agent/${dashboardData.agent.sharableLink}`
+      : "";
+    const shareText = `Hey! Join my RAD5 Brokers Network referral program and start earning with elite tech training. Use my link: ${referralLink}`;
+
+    if (!referralLink) {
+      toast.error("Referral link not available.");
+      return;
+    }
+
+    if (!platform && navigator.share) {
+      try {
+        await navigator.share({
+          title: "Join My RAD5 Referral Program",
+          text: shareText,
+          url: referralLink,
+        });
+        toast.success("Shared successfully!");
+        return;
+      } catch (err) {
+        console.error("Web Share API error:", err);
+      }
+    }
+
+    if (platform) {
+      const encodedUrl = encodeURIComponent(referralLink);
+      const encodedText = encodeURIComponent(shareText);
+      let shareUrl = "";
+      switch (platform) {
+        case "twitter":
+          shareUrl = `https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}`;
+          break;
+        case "whatsapp":
+          shareUrl = `https://api.whatsapp.com/send?text=${encodedText}`;
+          break;
+        case "linkedin":
+          shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`;
+          break;
+        case "facebook":
+          shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
+          break;
+        case "email":
+          shareUrl = `mailto:?subject=Join%20My%20RAD5%20Referral%20Program&body=${encodedText}`;
+          break;
+        case "telegram":
+          shareUrl = `https://t.me/share/url?url=${encodedUrl}&text=${encodedText}`;
+          break;
+        case "native":
+          if (navigator.share) {
+            await navigator.share({
+              title: "Join My RAD5 Referral Program",
+              text: shareText,
+              url: referralLink,
+            });
+            toast.success("Shared successfully!");
+            return;
+          }
+          break;
+        default:
+          return;
+      }
+      if (shareUrl) window.open(shareUrl, "_blank");
+    }
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (!file.type.startsWith("image/")) {
+        toast.error("Please upload a valid image file (e.g., JPG, PNG).");
+        return;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error("Image size must be less than 5MB.");
+        return;
+      }
+      setProfileImageFile(file);
+      setImagePreview(URL.createObjectURL(file));
+    }
+  };
+
+  const handleImageUpload = async () => {
+    if (!profileImageFile) {
+      toast.error("Please select an image to upload.");
+      return;
+    }
+
+    setIsUploading(true);
+    const formData = new FormData();
+    formData.append("profileImage", profileImageFile);
+
+    try {
+      const apiBaseUrl = import.meta.env.VITE_BASE_URL;
+      const token = localStorage.getItem("rbn_token");
+      if (!apiBaseUrl) {
+        throw new Error("BASE_URL not defined in .env");
+      }
+
+      if (!token) {
+        throw new Error("Authentication token missing. Please sign in.");
+      }
+
+      const response = await fetch(`${apiBaseUrl}/agent/profile-picture`, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorResult = (await response.json()) as ErrorResponse;
+        throw new Error(
+          errorResult.message ||
+            errorResult.error ||
+            `HTTP ${response.status}: ${response.statusText}`
+        );
+      }
+
+      const successResult = (await response.json()) as ProfileImageResponse;
+      setDashboardData((prev) =>
+        prev
+          ? {
+              ...prev,
+              agent: {
+                ...prev.agent,
+                profileImage: successResult.data.profileImage,
+              },
+            }
+          : prev
+      );
+      setProfileImageFile(null);
+      window.location.reload();
+      toast.success(
+        successResult.message || "Profile image updated successfully!"
+      );
+    } catch (err: any) {
+      console.error("Image upload error:", err.message);
+      toast.error(err.message || "Failed to update profile image.");
+      setImagePreview(dashboardData?.agent.profileImage || null);
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      setLoading(true);
+      setError(null);
+      const controller = new AbortController();
+
+      try {
+        const apiBaseUrl = import.meta.env.VITE_BASE_URL;
+        const baseUrl = window.location.host;
+
+        if (!apiBaseUrl) {
+          throw new Error("BASE_URL not defined in .env");
+        }
+
+        const token = localStorage.getItem("rbn_token");
+        if (!token) {
+          throw new Error("Please sign in to access the dashboard.");
+        }
+
+        const response = await fetch(`${apiBaseUrl}/agent/dashboard`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          signal: controller.signal,
+        });
+
+        if (!response.ok) {
+          const errorResult = (await response.json()) as ErrorResponse;
+          throw new Error(
+            errorResult.message ||
+              errorResult.error ||
+              `HTTP ${response.status}: ${response.statusText}`
+          );
+        }
+
+        const data: DashboardResponse = await response.json();
+        const expectedReferralLink = `${baseUrl}/register/agent/${data.agent.sharableLink}`;
+
+        const storedReferralLink = localStorage.getItem("rbn_referral_link");
+        const storedSharableLink = localStorage.getItem("rbn_sharable_link");
+
+        if (
+          storedReferralLink &&
+          storedSharableLink !== data.agent.sharableLink
+        ) {
+          toast.success("Referral link updated to match your account.");
+          localStorage.setItem("rbn_referral_link", expectedReferralLink);
+          localStorage.setItem("rbn_sharable_link", data.agent.sharableLink);
+        } else if (!storedReferralLink && data.agent.sharableLink) {
+          localStorage.setItem("rbn_referral_link", expectedReferralLink);
+          localStorage.setItem("rbn_sharable_link", data.agent.sharableLink);
+        }
+
+        if (mounted.current) {
+          setDashboardData(data);
+          setImagePreview(data.agent.profileImage);
+        }
+      } catch (err: any) {
+        if (err.name === "AbortError") return;
+        if (mounted.current) {
+          const errorMessage = err.message || "Failed to load dashboard data.";
+          setError(errorMessage);
+          toast.error(errorMessage);
+        }
+      } finally {
+        if (mounted.current) {
+          setLoading(false);
+        }
+      }
+
+      return () => {
+        controller.abort();
+      };
+    };
+
+    fetchDashboardData();
+  }, []);
+
+  const totalReferrals = dashboardData?.stats.totalReferrals ?? 0;
+  const totalWithdrawals = dashboardData?.stats.totalWithdrawals ?? 0;
+  const totalEarnings = dashboardData?.stats.totalEarnings ?? 0;
+  const fullName = dashboardData?.agent.fullName || "Agent";
+  const profileImage =
+    dashboardData?.agent.profileImage ?? "/default-avatar.png";
+  const sharableLink = dashboardData?.agent.sharableLink ?? "";
+  const referredUsers = dashboardData?.stats.referredUsers ?? [];
+
   return (
     <>
       <div className="flex-1 p-4 sm:p-6 lg:p-8 xl:ml-64 transition-all duration-300 max-w-full overflow-x-hidden">
@@ -272,124 +531,6 @@ const AgentDashboardHome = () => {
                 </div>
               </CardContent>
             </Card>
-
-            {/* <Card>
-              <CardHeader>
-                <CardTitle>Performance Trends</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {graphData.length > 0 ? (
-                  <div className="h-[300px] sm:h-[400px]">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart
-                        data={graphData}
-                        margin={{ top: 20, right: 10, left: 10, bottom: 5 }}
-                      >
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="date" tick={{ fontSize: 12 }} />
-                        <YAxis tick={{ fontSize: 12 }} />
-                        <Tooltip
-                          contentStyle={{
-                            backgroundColor: "rgba(255, 255, 255, 0.9)",
-                            borderRadius: "4px",
-                            fontSize: "12px",
-                          }}
-                        />
-                        <Legend wrapperStyle={{ fontSize: "12px" }} />
-                        <Bar
-                          dataKey="earnings"
-                          fill="#8884d8"
-                          name="Earnings (₦)"
-                        />
-                        <Bar
-                          dataKey="withdrawals"
-                          fill="#82ca9d"
-                          name="Withdrawals (₦)"
-                        />
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </div>
-                ) : (
-                  <div className="h-[300px] sm:h-[400px] flex items-center justify-center">
-                    <p className="text-gray-600 dark:text-gray-300">
-                      No performance data available yet.
-                    </p>
-                  </div>
-                )}
-              </CardContent>
-            </Card> */}
-            {/* <Card>
-              <CardHeader>
-                <CardTitle>Referred Users</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {referredUsers ? (
-                  referredUsers.length > 0 ? (
-                    <div className="overflow-x-auto">
-                      <Table>
-                        <TableHeader>
-                          <TableRow>
-                            <TableHead className="text-left">Name</TableHead>
-                            <TableHead className="text-left">Phone</TableHead>
-                            <TableHead className="text-left">Track</TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {referredUsers.map((user) => (
-                            <Dialog key={user.id}>
-                              <DialogTrigger asChild>
-                                <TableRow
-                                  className="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
-                                  onClick={() => setSelectedUser(user)}
-                                >
-                                  <TableCell>{user.fullName}</TableCell>
-                                  <TableCell>{user.phoneNumber}</TableCell>
-                                  <TableCell>{user.track}</TableCell>
-                                </TableRow>
-                              </DialogTrigger>
-                              <DialogContent className="sm:max-w-md">
-                                <DialogHeader>
-                                  <DialogTitle>{user.fullName}</DialogTitle>
-                                </DialogHeader>
-                                <div className="space-y-2">
-                                  <p>
-                                    <strong>Email:</strong> {user.email}
-                                  </p>
-                                  <p>
-                                    <strong>Phone:</strong> {user.phoneNumber}
-                                  </p>
-                                  <p>
-                                    <strong>Track:</strong> {user.track}
-                                  </p>
-                                  <p>
-                                    <strong>Payment Status:</strong>{" "}
-                                    {user.paymentStatus}
-                                  </p>
-                                  <p>
-                                    <strong>Joined:</strong>{" "}
-                                    {new Date(
-                                      user.createdAt
-                                    ).toLocaleDateString()}
-                                  </p>
-                                </div>
-                              </DialogContent>
-                            </Dialog>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </div>
-                  ) : (
-                    <p className="text-gray-600 dark:text-gray-300">
-                      No referred users yet.
-                    </p>
-                  )
-                ) : (
-                  <p className="text-gray-600 dark:text-gray-300">
-                    Unable to load referred users. Please try again later.
-                  </p>
-                )}
-              </CardContent>
-            </Card> */}
           </div>
         )}
       </div>

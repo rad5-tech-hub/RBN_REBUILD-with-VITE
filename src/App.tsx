@@ -5,6 +5,7 @@ import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import AgentDashboard from "./pages/AgentDashboard";
+import AgentDashboardHome from "./components/agent/AgentDashboardHome";
 function App() {
   return (
     <>
@@ -21,7 +22,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <AgentDashboard>
-                    hello
+                    <AgentDashboardHome/>
                   </AgentDashboard>
                 </ProtectedRoute>
               }

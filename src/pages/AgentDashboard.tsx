@@ -40,7 +40,7 @@ interface Agent {
   updatedAt: string;
 }
 
-interface DashboardResponse {
+export interface DashboardResponse {
   message: string;
   agent: Agent;
   stats: {
@@ -55,7 +55,7 @@ interface DashboardResponse {
   };
 }
 
-interface ErrorResponse {
+export interface ErrorResponse {
   message?: string;
   error?: string;
 }
@@ -181,7 +181,7 @@ const AgentDashboard: React.FC<AgentDashboardProps> = ({ children }) => {
           profileImage={dashboardData?.agent.profileImage || "/default-avatar.png"}
           agentName={dashboardData?.agent.fullName || "Agent"}
         />
-        <div className="flex-1 p-4 sm:p-6 lg:p-8 xl:ml-64 transition-all duration-300 max-w-full overflow-x-hidden">
+        <div className="flex-1 p-4  transition-all duration-300 max-w-full overflow-x-hidden">
           
           {!loading && !error && children}
         </div>
