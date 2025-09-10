@@ -21,10 +21,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSidebar } from "../admin/AdminSidebarContext";
 
-interface AdminSidebarProps {
-  isOpen: boolean;
-  toggleSidebar: () => void;
-}
+
 
 export default function AdminSidebar() {
   const pathname = window.location.pathname

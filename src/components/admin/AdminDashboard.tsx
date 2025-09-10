@@ -1,9 +1,9 @@
-import { useState } from "react";
+
 import { Outlet } from "react-router-dom";
 import AdminSidebar from "../ui/AdminSideBar";
 
 const AdminDashboard = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
+  
   return (
     <>
       <div className="flex min-h-screen bg-gray-100 dark:bg-gray-900">

@@ -40,7 +40,7 @@ const AgentDashboardHome = () => {
   const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  
   const mounted = useRef(true);
 
   //Function to share links
@@ -194,7 +194,7 @@ const AgentDashboardHome = () => {
   useEffect(() => {
     const fetchDashboardData = async () => {
       setLoading(true);
-      setError(null);
+      
       const controller = new AbortController();
 
       try {
@@ -255,7 +255,7 @@ const AgentDashboardHome = () => {
         if (err.name === "AbortError") return;
         if (mounted.current) {
           const errorMessage = err.message || "Failed to load dashboard data.";
-          setError(errorMessage);
+          // setError(errorMessage);
           toast.error(errorMessage);
         }
       } finally {
@@ -279,7 +279,7 @@ const AgentDashboardHome = () => {
   const profileImage =
     dashboardData?.agent.profileImage ?? "/default-avatar.png";
   const sharableLink = dashboardData?.agent.sharableLink ?? "";
-  const referredUsers = dashboardData?.stats.referredUsers ?? [];
+  
 
   return (
     <>

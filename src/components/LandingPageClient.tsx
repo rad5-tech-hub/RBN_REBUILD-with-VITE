@@ -1,4 +1,3 @@
-
 import Logo from "../assets/images/rad5hub.png"
 import { useState, useEffect } from "react";
 import { Button } from "../components/ui/button";
@@ -77,7 +76,7 @@ const stats: { label: string; value: number }[] = [
 
 export default function LandingPageClient() {
   const { theme, setTheme } = useTheme();
-  const [email, setEmail] = useState("");
+  
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
   const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
   const [selectedCourseName, setSelectedCourseName] = useState("");
@@ -112,11 +111,7 @@ export default function LandingPageClient() {
     },
   ];
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setEmail("");
-    toast.success("Subscribed successfully!");
-  };
+
 
   const calculateCommission = (price: number) => {
     setCommission(price * 0.05);

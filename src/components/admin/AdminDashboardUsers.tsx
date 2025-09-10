@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import AdminSidebar from "../ui/AdminSideBar";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import {
   Table,
@@ -13,7 +12,6 @@ import {
   TableRow,
 } from "../ui/table";
 import { Input } from "../ui/input";
-import { Button } from "../ui/button";
 import { RiMenu2Line, RiSearchLine } from "react-icons/ri";
 import { toast } from "react-hot-toast";
 import {
@@ -58,7 +56,7 @@ interface DashboardData {
 }
 
 export default function AdminDashboardUsers() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
+  
   const {openSidebar} = useSidebar()
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(
     null
@@ -282,7 +280,7 @@ export default function AdminDashboardUsers() {
                 <PaginationContent>
                   <PaginationItem>
                     <PaginationPrevious
-                    size={""}
+                    size={"default"}
                       href="#"
                       onClick={() =>
                         setCurrentPage((prev) => Math.max(prev - 1, 1))
@@ -297,7 +295,7 @@ export default function AdminDashboardUsers() {
                   {[...Array(totalPages)].map((_, i) => (
                     <PaginationItem key={i}>
                       <PaginationLink
-                      size={""}
+                      size={"default"}
                         href="#"
                         onClick={() => setCurrentPage(i + 1)}
                         isActive={currentPage === i + 1}
@@ -308,7 +306,7 @@ export default function AdminDashboardUsers() {
                   ))}
                   <PaginationItem>
                     <PaginationNext
-                    size={""}
+                    size={"default"}
                       href="#"
                       onClick={() =>
                         setCurrentPage((prev) => Math.min(prev + 1, totalPages))

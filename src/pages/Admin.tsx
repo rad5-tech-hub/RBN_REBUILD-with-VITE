@@ -105,7 +105,7 @@ export default function Admin() {
 
       const contentType = response.headers.get("content-type");
       if (!contentType || !contentType.includes("application/json")) {
-        const text = await response.text();
+        
         throw new Error(
           `Invalid response format: Expected JSON, received ${
             contentType || "unknown"

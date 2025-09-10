@@ -54,11 +54,7 @@ interface Withdrawal {
   Agent: Agent;
 }
 
-interface User {
-  id: string;
-  fullName: string;
-  email: string;
-}
+
 
 const StatusBadge = ({ status }: { status: string }) => {
   const statusClasses = {
@@ -87,7 +83,6 @@ export default function AdminDashboardWithdrawals() {
   const [isFundDialogOpen, setIsFundDialogOpen] = useState(false);
   const [isFunding, setIsFunding] = useState(false);
   const [isFetchingUsers, setIsFetchingUsers] = useState(false);
-  const [agentUsers, setAgentUsers] = useState<User[]>([]);
   const [selectedAgentId, setSelectedAgentId] = useState<string | null>(null);
   const [fundData, setFundData] = useState<{
     agentId: string;
@@ -154,7 +149,7 @@ export default function AdminDashboardWithdrawals() {
       }
 
       const result = await response.json();
-      setAgentUsers(result.users || []);
+      
       setSelectedAgentId(agentId);
       toast.success(result.message || "Agent users loaded successfully!", {
         id: "agent-users-load",
@@ -168,7 +163,7 @@ export default function AdminDashboardWithdrawals() {
         duration: 5000,
         position: "top-right",
       });
-      setAgentUsers([]);
+      
     } finally {
       setIsFetchingUsers(false);
     }
@@ -219,7 +214,7 @@ export default function AdminDashboardWithdrawals() {
       );
 
       setFundData({ agentId: "", amount: 0 });
-      setAgentUsers([]);
+      
       setIsFundDialogOpen(false);
       // Refresh withdrawals to reflect updated status
       const fetchWithdrawals = async () => {
@@ -573,7 +568,7 @@ export default function AdminDashboardWithdrawals() {
                   <PaginationItem>
                     <PaginationPrevious
                       href="#"
-                      size={""}
+                      size={"default"}
                       onClick={() =>
                         setCurrentPage((prev) => Math.max(prev - 1, 1))
                       }
@@ -587,7 +582,7 @@ export default function AdminDashboardWithdrawals() {
                   {[...Array(totalPages)].map((_, i) => (
                     <PaginationItem key={i}>
                       <PaginationLink
-                        size={""}
+                        size={"default"}
                         href="#"
                         onClick={() => setCurrentPage(i + 1)}
                         isActive={currentPage === i + 1}
@@ -598,7 +593,7 @@ export default function AdminDashboardWithdrawals() {
                   ))}
                   <PaginationItem>
                     <PaginationNext
-                      size={""}
+                      size={"default"}
                       href="#"
                       onClick={() =>
                         setCurrentPage((prev) => Math.min(prev + 1, totalPages))

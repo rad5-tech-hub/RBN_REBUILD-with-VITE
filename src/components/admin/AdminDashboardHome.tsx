@@ -19,7 +19,6 @@ import {
 } from "../ui/dialog";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Loader from "../loader/Loader";
 import { RiMenu2Line } from "react-icons/ri";
 import { useSidebar } from "./AdminSidebarContext";
 
@@ -58,7 +57,7 @@ const AdminDashboardHome = () => {
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(
     null
   );
-  const [selectedLog, setSelectedLog] = useState<ActivityLog | null>(null);
+  
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -126,7 +125,7 @@ const AdminDashboardHome = () => {
 
   const generateActivityLog = (data: DashboardData): ActivityLog[] => {
     const logs: ActivityLog[] = [];
-    data.stats.agents.forEach((agent, index) => {
+    data.stats.agents.forEach((agent) => {
       logs.push({
         id: agent.id,
         action: "Agent registered",
@@ -135,7 +134,7 @@ const AdminDashboardHome = () => {
         details: `Fullname: ${agent.fullname}`,
       });
     });
-    data.stats.users.forEach((user, index) => {
+    data.stats.users.forEach((user) => {
       logs.push({
         id: user.id,
         action: "User registered",
@@ -268,7 +267,7 @@ const AdminDashboardHome = () => {
                       <DialogTrigger asChild>
                         <TableRow
                           className="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
-                          onClick={() => setSelectedLog(log)}
+                          // onClick={() => setSelectedLog(log)}
                         >
                           <TableCell>{log.action}</TableCell>
                           <TableCell>{log.user}</TableCell>

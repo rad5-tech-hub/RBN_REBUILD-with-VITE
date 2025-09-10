@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
-import Sidebar from "../ui/sidebar";
+
 import ReferralLinkSection from "../referrals/ReferralLinkSection";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import {
@@ -69,7 +69,7 @@ interface ErrorResponse {
 }
 
 export default function AgentDashBoardReferrals() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  
   const [dashboardData, setDashboardData] = useState<DashboardResponse | null>(
     null
   );
@@ -149,10 +149,7 @@ export default function AgentDashBoardReferrals() {
   useEffect(() => {
     // Log window size, card, and table dimensions for debugging
     const handleResize = () => {
-      const cards = document.querySelectorAll(
-        ".card"
-      ) as NodeListOf<HTMLElement>;
-
+   
       const table = document.querySelector("table") as HTMLElement | null;
       if (table) {
       }
@@ -223,6 +220,7 @@ export default function AgentDashBoardReferrals() {
           toast.error("Native sharing not supported.", { duration: 5000 });
           return;
         }
+        break
       default:
         return;
     }

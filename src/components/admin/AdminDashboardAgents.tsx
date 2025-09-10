@@ -1,7 +1,6 @@
 
 
 import { useState, useEffect } from "react";
-import AdminSidebar from "../ui/AdminSideBar";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import {
   Table,
@@ -83,11 +82,7 @@ interface DashboardData {
   message: string;
 }
 
-interface AllTransactionsResponse {
-  message?: string;
-  messsage?: string; // Typo handling
-  data: Transaction[];
-}
+
 
 interface FundAgentResponse {
   message: string;
@@ -101,17 +96,17 @@ export default function AdminDashboardAgents() {
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(
     null
   );
-  const [allTransactions, setAllTransactions] = useState<Transaction[]>([]);
+  
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [allTxPage, setAllTxPage] = useState<number>(1);
+  
   const [fundData, setFundData] = useState<{
     userId: string;
     amountPaid: number;
     commissionRate: number;
   }>({ userId: "", amountPaid: 0, commissionRate: 0.1 });
-  const [agentWallet, setAgentWallet] = useState<AgentWallet | null>(null);
+  
   const [isFunding, setIsFunding] = useState<boolean>(false);
   const [agentUsers, setAgentUsers] = useState<User[]>([]);
   const [selectedAgentId, setSelectedAgentId] = useState<string | null>(null);
@@ -169,8 +164,8 @@ export default function AdminDashboardAgents() {
           throw new Error(error.message || `HTTP ${allTxResponse.status}`);
         }
 
-        const allTxResult: AllTransactionsResponse = await allTxResponse.json();
-        setAllTransactions(allTxResult.data || []);
+        
+        
       } catch (err: any) {
         toast.error(err.message || "Failed to load agent data.", {
           id: "dashboard-error",
@@ -263,7 +258,7 @@ export default function AdminDashboardAgents() {
       }
 
       const result: AgentWallet = await response.json();
-      setAgentWallet(result);
+      
       setCurrentAgentWallet(result);
       setIsTransactionModalOpen(true);
     } catch (err: any) {
@@ -325,11 +320,6 @@ export default function AdminDashboardAgents() {
     }
   };
 
-  const getUserNameFromDescription = (description?: string): string => {
-    if (!description) return "-";
-    const match = description.match(/user (.*)$/);
-    return match ? match[1] : "-";
-  };
 
   if (isLoading || !dashboardData) {
     return (
@@ -397,9 +387,7 @@ export default function AdminDashboardAgents() {
                     </TableHeader>
                     <TableBody>
                       {paginatedAgents.map((agent) => {
-                        const latestTx = allTransactions.find(
-                          (tx) => tx.agentId === agent.id
-                        );
+                       
                         return (
                           <TableRow key={agent.id}>
                             <TableCell>{agent.fullname}</TableCell>
@@ -439,9 +427,7 @@ export default function AdminDashboardAgents() {
                 </div>
                 <div className="block sm:hidden space-y-4">
                   {paginatedAgents.map((agent) => {
-                    const latestTx = allTransactions.find(
-                      (tx) => tx.agentId === agent.id
-                    );
+                    
                     return (
                       <Card key={agent.id} className="p-4">
                         <div className="flex flex-col gap-2">
@@ -697,7 +683,7 @@ export default function AdminDashboardAgents() {
                 <PaginationContent>
                   <PaginationItem>
                     <PaginationPrevious
-                      size={""}
+                      size={"default"}
                       href="#"
                       onClick={() =>
                         setCurrentPage((prev) => Math.max(prev - 1, 1))
@@ -712,7 +698,7 @@ export default function AdminDashboardAgents() {
                   {[...Array(totalPages)].map((_, i) => (
                     <PaginationItem key={i}>
                       <PaginationLink
-                        size={""}
+                        size={"default"}
                         href="#"
                         onClick={() => setCurrentPage(i + 1)}
                         isActive={currentPage === i + 1}
@@ -723,7 +709,7 @@ export default function AdminDashboardAgents() {
                   ))}
                   <PaginationItem>
                     <PaginationNext
-                      size={""}
+                      size={"default"}
                       href="#"
                       onClick={() =>
                         setCurrentPage((prev) => Math.min(prev + 1, totalPages))

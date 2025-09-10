@@ -6,7 +6,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DollarSign, ArrowUpRight, Clock } from "lucide-react";
-import Sidebar from "../ui/sidebar";
+
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import {
   Table,
@@ -172,7 +172,7 @@ const formatCreditDescription = (description: string, type: string) => {
 };
 
 export default function EarningsAndWithdrawals() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  
   const {openSidebar} = useSidebar()
   const [dashboardData, setDashboardData] = useState<DashboardResponse | null>(
     null
@@ -358,13 +358,7 @@ export default function EarningsAndWithdrawals() {
   // Debug layout dimensions
   useEffect(() => {
     const handleResize = () => {
-      const cards = document.querySelectorAll(
-        ".card"
-      ) as NodeListOf<HTMLElement>;
-
-      const tables = document.querySelectorAll(
-        "table"
-      ) as NodeListOf<HTMLElement>;
+   
     };
     handleResize();
     window.addEventListener("resize", handleResize);
@@ -476,7 +470,7 @@ export default function EarningsAndWithdrawals() {
   );
   const totalPages = Math.ceil(allTransactions.length / itemsPerPage);
 
-  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+  
   const nextPage = () =>
     setCurrentPage((prev) => Math.min(prev + 1, totalPages));
   const prevPage = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
