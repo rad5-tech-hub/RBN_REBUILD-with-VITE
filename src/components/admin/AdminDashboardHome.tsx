@@ -20,6 +20,8 @@ import {
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Loader from "../loader/Loader";
+import { RiMenu2Line } from "react-icons/ri";
+import { useSidebar } from "./AdminSidebarContext";
 
 interface DashboardData {
   stats: {
@@ -51,6 +53,7 @@ interface ActivityLog {
 
 const AdminDashboardHome = () => {
   const navigate = useNavigate();
+  const {openSidebar} = useSidebar()
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(
     null
@@ -170,6 +173,15 @@ const AdminDashboardHome = () => {
 
   return (
     <div>
+      <button
+                className="lg:hidden mb-4 p-2 bg-gray-800 text-white rounded-md"
+                onClick={() => {
+                  openSidebar()
+                }}
+                aria-label="Open sidebar"
+              >
+                <RiMenu2Line className="h-6 w-6" />
+              </button>
       <h1 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-gray-800 dark:text-gray-100">
         Admin Dashboard
       </h1>

@@ -34,6 +34,7 @@ import { RiMenu2Line, RiWallet3Line, RiSearchLine } from "react-icons/ri";
 
 import { Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { useSidebar } from "./AdminSidebarContext";
 
 interface Agent {
   id: string;
@@ -96,7 +97,7 @@ interface FundAgentResponse {
 }
 
 export default function AdminDashboardAgents() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
+   const {openSidebar } = useSidebar()
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(
     null
   );
@@ -355,7 +356,9 @@ export default function AdminDashboardAgents() {
       <div className="flex-1 transition-all duration-300">
         <button
           className="lg:hidden mb-4 p-2 bg-gray-800 text-white rounded-md"
-          onClick={() => setIsSidebarOpen(true)}
+          onClick={() => {
+            openSidebar()
+          }}
           aria-label="Open sidebar"
         >
           <RiMenu2Line className="h-6 w-6" />

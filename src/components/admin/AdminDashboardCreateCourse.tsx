@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useSidebar } from "./AdminSidebarContext";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "../ui/button";
@@ -8,7 +9,7 @@ import { toast } from "react-hot-toast";
 import { Toaster } from "react-hot-toast";
 
 export default function AdminDashboardCreateCourse() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const {openSidebar} = useSidebar()
   const [courseName, setCourseName] = useState("");
   const [price, setPrice] = useState("");
   const [duration,setDuration] = useState("")
@@ -70,7 +71,7 @@ export default function AdminDashboardCreateCourse() {
       <div className="flex-1  transition-all duration-300">
         <button
           className="lg:hidden mb-4 p-2 bg-gray-800 text-white rounded-md"
-          onClick={() => setIsSidebarOpen(true)}
+          onClick={() => openSidebar()}
         >
           <svg
             className="h-6 w-6"

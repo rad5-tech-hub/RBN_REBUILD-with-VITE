@@ -22,6 +22,7 @@ import {
   type DashboardResponse,
   type ErrorResponse,
 } from "../../pages/AgentDashboard";
+import { useSidebar } from "./AgentSidebarContext";
 
 interface ProfileImageResponse {
   message: string;
@@ -31,6 +32,7 @@ interface ProfileImageResponse {
 }
 
 const AgentDashboardHome = () => {
+  const {openSidebar} = useSidebar()
   const [dashboardData, setDashboardData] = useState<DashboardResponse | null>(
     null
   );
@@ -284,7 +286,9 @@ const AgentDashboardHome = () => {
       <div className="flex-1 p-4 sm:p-6 lg:p-8 xl:ml-64 transition-all duration-300 max-w-full overflow-x-hidden">
         <button
           className="lg:hidden mb-4 p-2 bg-gray-800 text-white rounded-md"
-          // onClick={() => setIsSidebarOpen(true)}
+          onClick={() => {
+            openSidebar()
+          }}
         >
           <RiMenu2Line className="h-6 w-6" />
         </button>

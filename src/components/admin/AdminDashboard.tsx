@@ -7,10 +7,7 @@ const AdminDashboard = () => {
   return (
     <>
       <div className="flex min-h-screen bg-gray-100 dark:bg-gray-900">
-        <AdminSidebar
-          isOpen={isSidebarOpen}
-          toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
-        />
+        <AdminSidebar />
 
         <div className="flex-1 p-2 sm:p-4 lg:p-6 xl:ml-64 transition-all duration-300 max-w-full overflow-x-hidden">
           <Outlet />

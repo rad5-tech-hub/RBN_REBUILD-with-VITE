@@ -7,6 +7,7 @@ import { Button } from "../ui/button";
 import { toast } from "react-hot-toast";
 import { Toaster } from "react-hot-toast";
 import { Eye, EyeOff } from "lucide-react";
+import { useSidebar } from "../admin/AdminSidebarContext";
 
 interface CreateAdminResponse {
   message: string;
@@ -29,7 +30,8 @@ export default function CreateAdmin() {
     confirmPassword: "",
   });
   const [isLoading, setIsLoading] = useState(false);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  
+  const {openSidebar} = useSidebar()
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
@@ -123,7 +125,9 @@ export default function CreateAdmin() {
       <div className="flex-1 transition-all duration-300">
         <button
           className="lg:hidden mb-4 p-2 bg-gray-800 text-white rounded-md"
-          onClick={() => setIsSidebarOpen(true)}
+          onClick={() => {
+            openSidebar()
+          }}
           aria-label="Open sidebar"
         >
           <svg

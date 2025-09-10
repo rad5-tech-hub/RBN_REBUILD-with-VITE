@@ -1,5 +1,4 @@
-  ;
-
+import { useSidebar } from "./AgentSidebarContext";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
@@ -174,6 +173,7 @@ const formatCreditDescription = (description: string, type: string) => {
 
 export default function EarningsAndWithdrawals() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const {openSidebar} = useSidebar()
   const [dashboardData, setDashboardData] = useState<DashboardResponse | null>(
     null
   );
@@ -679,7 +679,7 @@ export default function EarningsAndWithdrawals() {
 
         <button
           className="lg:hidden mb-2 p-2 bg-gray-800 text-white rounded-md min-w-10 min-h-10"
-          onClick={() => setIsSidebarOpen(true)}
+          onClick={() => openSidebar()}
           aria-label="Toggle sidebar"
         >
           <RiMenu2Line className="h-6 w-6" />

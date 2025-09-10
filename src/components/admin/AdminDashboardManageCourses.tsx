@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useSidebar } from "./AdminSidebarContext";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import {
@@ -32,7 +33,6 @@ interface Course {
 }
 
 export default function AdminDashboardManageCourses() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [courses, setCourses] = useState<Course[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -40,6 +40,7 @@ export default function AdminDashboardManageCourses() {
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
   const [editedName, setEditedName] = useState("");
   const [editedPrice, setEditedPrice] = useState("");
+  const {openSidebar} = useSidebar()
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -162,7 +163,9 @@ export default function AdminDashboardManageCourses() {
       <div className="flex-1 transition-all duration-300">
         <button
           className="lg:hidden mb-4 p-2 bg-gray-800 text-white rounded-md"
-          onClick={() => setIsSidebarOpen(true)}
+          onClick={() => 
+            openSidebar()
+          }
         >
           <svg
             className="h-6 w-6"

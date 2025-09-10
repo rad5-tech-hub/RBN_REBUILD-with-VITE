@@ -19,16 +19,14 @@ import { useTheme } from "next-themes";
 import { useEffect } from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSidebar } from "../admin/AdminSidebarContext";
 
 interface AdminSidebarProps {
   isOpen: boolean;
   toggleSidebar: () => void;
 }
 
-export default function AdminSidebar({
-  isOpen,
-  toggleSidebar,
-}: AdminSidebarProps) {
+export default function AdminSidebar() {
   const pathname = window.location.pathname
   const { theme, setTheme } = useTheme();
   const navigate = useNavigate()
@@ -84,6 +82,7 @@ export default function AdminSidebar({
 
   if (!mounted) return null; // Prevent SSR render of theme-dependent components
 
+  const {isOpen,toggleSidebar } = useSidebar();
   return (
     <>
       <aside

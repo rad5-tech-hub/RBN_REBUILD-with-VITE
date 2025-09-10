@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { useSidebar } from "./AdminSidebarContext";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import {
   Table,
@@ -79,7 +79,7 @@ const StatusBadge = ({ status }: { status: string }) => {
 };
 
 export default function AdminDashboardWithdrawals() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const {openSidebar} = useSidebar()
   const [withdrawals, setWithdrawals] = useState<Withdrawal[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -373,7 +373,9 @@ export default function AdminDashboardWithdrawals() {
       <div className="flex-1 transition-all duration-300">
         <button
           className="lg:hidden mb-4 p-2 bg-gray-800 text-white rounded-md"
-          onClick={() => setIsSidebarOpen(true)}
+          onClick={() => {
+            openSidebar()
+          }}
         >
           <RiMenu2Line className="h-6 w-6" />
         </button>

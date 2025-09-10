@@ -11,7 +11,7 @@ import { Link } from "react-router-dom";
 import Logo from "../../assets/images/rad5hub.png"
 import { useTheme } from "next-themes";
 import { useState, useEffect } from "react";
-
+import { useSidebar } from "../agent/AgentSidebarContext";
 interface SidebarProps {
   isOpen: boolean;
   toggleSidebar: () => void;
@@ -21,8 +21,7 @@ interface SidebarProps {
 }
 
 export default function Sidebar({
-  isOpen,
-  toggleSidebar,
+  
   profileImage = "/default-avatar.png",
   imagePreview,
   agentName = "Agent",
@@ -32,6 +31,7 @@ export default function Sidebar({
   const pathname = window.location.pathname;
   const { theme, setTheme } = useTheme();
   const [imageLoadError, setImageLoadError] = useState(false);
+  const {isOpen,toggleSidebar } = useSidebar();
 
   const navItems = [
     {

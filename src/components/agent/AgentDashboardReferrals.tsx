@@ -1,5 +1,3 @@
-  ;
-
 import { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
 import Sidebar from "../ui/sidebar";
@@ -26,6 +24,7 @@ import {
 } from "react-icons/fa";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Toaster } from "react-hot-toast";
+import { useSidebar } from "./AgentSidebarContext";
 
 interface ReferredUser {
   id: string;
@@ -123,9 +122,7 @@ export default function AgentDashBoardReferrals() {
 
         if (mounted) {
           setDashboardData(data);
-          toast.success(data.message || "Referrals data loaded successfully!", {
-            duration: 3000,
-          });
+          
         }
       } catch (err: any) {
         if (err.name === "AbortError") return;
@@ -233,6 +230,7 @@ export default function AgentDashBoardReferrals() {
     window.open(url, "_blank");
     toast.success(`Shared to ${platform}!`, { duration: 3000 });
   };
+  const {openSidebar} = useSidebar()
 
   const referredUsers = dashboardData?.stats.referredUsers || [];
 
@@ -242,7 +240,7 @@ export default function AgentDashBoardReferrals() {
         <button
           className="lg:hidden mb-2 p-2 bg-gray-800 text-white rounded-md min-w-10 min-h-10"
           onClick={() => {
-            toast.error("Add context to handle sidebar")            
+            openSidebar()
           }}
           aria-label="Toggle sidebar"
         >

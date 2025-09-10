@@ -19,6 +19,8 @@ import AdminDashboardCreateAdmin from "./components/admin/AdminDashboardCreateAd
 import AdminDashboardWithdrawals from "./components/admin/AdminDashboardWithdrawals";
 import AdminDashboardCreateCourse from "./components/admin/AdminDashboardCreateCourse";
 import AdminDashboardManageCourses from "./components/admin/AdminDashboardManageCourses";
+import { AdminSidebarProvider } from "./components/admin/AdminSidebarContext";
+import { AgentSidebarProvider } from "./components/agent/AgentSidebarContext";
 function App() {
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
@@ -36,7 +38,10 @@ function App() {
             path="/agent-dashboard"
             element={
               <ProtectedRoute>
+                <AgentSidebarProvider>
+
                 <AgentDashboard />
+                </AgentSidebarProvider>
               </ProtectedRoute>
             }
           >
@@ -69,7 +74,10 @@ function App() {
             path="/admin"
             element={
               <ProtectedAdminRoute>
+                <AdminSidebarProvider>
+
                 <AdminDashboard />
+                </AdminSidebarProvider>
               </ProtectedAdminRoute>
             }
           >
