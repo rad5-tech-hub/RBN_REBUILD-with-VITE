@@ -33,7 +33,8 @@ export default function ReferralLinkSection({
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(referralLink);
-      toast.success("Referral link copied!", { duration: 2000 });
+      
+      
     } catch (err) {
       console.error("Failed to copy referral link:", err);
       toast.error("Failed to copy link.");
