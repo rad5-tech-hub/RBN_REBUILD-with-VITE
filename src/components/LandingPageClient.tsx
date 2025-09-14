@@ -1,7 +1,12 @@
-import Logo from "../assets/images/rad5hub.png"
+import Logo from "../assets/images/rad5hub.png";
 import { useState, useEffect } from "react";
 import { Button } from "../components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../components/ui/card";
 import {
   Select,
   SelectContent,
@@ -31,14 +36,9 @@ import { useInView } from "react-intersection-observer";
 import { toast } from "react-hot-toast";
 import { Toaster } from "react-hot-toast";
 import Loader from "./loader/Loader";
+import { testimonials } from "../constants/testimonials";
 
-interface Testimonial {
-  name: string;
-  role: string;
-  quote: string;
-}
-
-interface Course {
+export interface Course {
   id: string;
   courseName: string;
   price: number;
@@ -47,36 +47,16 @@ interface Course {
   updatedAt: string;
 }
 
-const testimonials: Testimonial[] = [
-  {
-    name: "Chinedu O.",
-    role: "RBN Ambassador",
-    quote:
-      "RBN made it easy to earn by referring students to RAD5’s web dev course. I’ve earned over ₦125,000!",
-  },
-  {
-    name: "Fatima B.",
-    role: "Digital Marketer",
-    quote:
-      "The referral system is seamless. I love promoting RAD5’s programs and seeing my commissions grow.",
-  },
-  {
-    name: "Emeka N.",
-    role: "Tech Enthusiast",
-    quote:
-      "As an RBN ambassador, I’ve built a network and earned passive income. Highly recommend!",
-  },
-];
 
 const stats: { label: string; value: number }[] = [
-  { label: "Ambassadors", value: 5000 },
-  { label: "Referrals", value: 20000 },
-  { label: "Commissions Paid (₦)", value: 50000000 },
+  { label: "Ambassadors", value: 0 },
+  { label: "Referrals", value: 0 },
+  { label: "Commissions Paid (₦)", value: 0 },
 ];
 
 export default function LandingPageClient() {
   const { theme, setTheme } = useTheme();
-  
+
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
   const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
   const [selectedCourseName, setSelectedCourseName] = useState("");
@@ -110,8 +90,6 @@ export default function LandingPageClient() {
       description: "Get 5% commission per enrollment.",
     },
   ];
-
-
 
   const calculateCommission = (price: number) => {
     setCommission(price * 0.05);
@@ -178,7 +156,7 @@ export default function LandingPageClient() {
     return (
       <div className="min-h-screen bg-[#ffff]/20 dark:bg-gray-900 flex items-center justify-center">
         <p className="text-gray-800 dark:text-gray-100">
-          <Loader/>
+          <Loader />
         </p>
       </div>
     );
@@ -191,8 +169,6 @@ export default function LandingPageClient() {
         className="fixed inset-0 bg-[#ffff]/20 dark:bg-gray-900 z-0"
         aria-hidden="true"
       />
-
-      
 
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-white/10 dark:bg-gray-800/10 backdrop-blur-lg">
@@ -360,7 +336,9 @@ export default function LandingPageClient() {
       </header>
 
       {/* Hero Section */}
-      <section className="min-h-screen flex items-center justify-center relative z-10 py-12 bg-[url('/bg03.jpg')] bg-cover bg-center">
+      <section className="min-h-screen flex items-center justify-center relative z-10 py-12 bg-[url('/src/assets/images/group-photo.jpg')] bg-cover bg-center">
+        {/* Overlay */}
+        <div className="absolute inset-0 bg-black/40 "></div>
         <motion.div
           className="container mx-auto px-4 sm:px-6 text-center bg-transparent py-8 sm:py-12 max-w-4xl relative z-20"
           initial={{ opacity: 0, scale: 0.9 }}
@@ -400,7 +378,7 @@ export default function LandingPageClient() {
               <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4 bg-white/20 dark:bg-gray-800/20 rounded-lg p-4">
                 <Select
                   value={selectedCourseId || ""}
-                  onValueChange={(value:any) => setSelectedCourseId(value)}
+                  onValueChange={(value: any) => setSelectedCourseId(value)}
                   aria-label="Select a course"
                 >
                   <SelectTrigger className="bg-transparent border-none text-white dark:text-gray-100 w-full max-w-xs flex items-center justify-between pr-2">
@@ -459,8 +437,6 @@ export default function LandingPageClient() {
         </motion.div>
       </section>
 
-      
-
       {/* Features Section */}
       <section
         id="features"
@@ -506,32 +482,38 @@ export default function LandingPageClient() {
             RAD5 Tech Hub Programs
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {courses.map((course, index) => (
-              <motion.div
-                key={course.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                viewport={{ once: true }}
-              >
-                <Card className="border-white border-2 p-4 sm:p-6 bg-white dark:bg-gray-800">
-                  <CardHeader>
-                    <CardTitle className="text-lg sm:text-xl">
-                      {course.courseName}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-gray-600 dark:text-gray-300">
-                      Price: ₦{course.price.toLocaleString()}
-                    </p>
-                    <p className="text-gray-600 dark:text-gray-300 mt-2">
-                      Earn ₦{(course.price * 0.05).toLocaleString()} per
-                      referral
-                    </p>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
+            {courses.length === 0 && (
+              <>
+                <p className="text-red-500">No courses available.</p>
+              </>
+            )}
+            {courses.length > 0 &&
+              courses.map((course, index) => (
+                <motion.div
+                  key={course.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  viewport={{ once: true }}
+                >
+                  <Card className="border-white border-2 p-4 sm:p-6 bg-white dark:bg-gray-800">
+                    <CardHeader>
+                      <CardTitle className="text-lg sm:text-xl">
+                        {course.courseName}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-gray-600 dark:text-gray-300">
+                        Price: ₦{course.price.toLocaleString()}
+                      </p>
+                      <p className="text-gray-600 dark:text-gray-300 mt-2">
+                        Earn ₦{(course.price * 0.05).toLocaleString()} per
+                        referral
+                      </p>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
           </div>
         </div>
       </section>
@@ -677,8 +659,6 @@ export default function LandingPageClient() {
           style: { fontSize: "14px" },
         }}
       />
-
-    
     </div>
   );
 }

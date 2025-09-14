@@ -1,4 +1,5 @@
-import { useState, type FormEvent, useCallback } from "react";
+import { useState, type FormEvent, useCallback, useEffect } from "react";
+import { type Course } from "../components/LandingPageClient";
 import Logo from "..//assets/images/rad5hub.png";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
@@ -52,8 +53,10 @@ interface ErrorResponse {
 export default function RegisterPage() {
   const navigate = useNavigate();
   const { id } = useParams();
-  console.log(id);
-
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [formSubmittedSuccessfully, setFormSubmittedSuccessfully] =
+    useState<boolean>(false);
   const [formData, setFormData] = useState<FormData>({
     fullName: "",
     email: "",
@@ -64,7 +67,7 @@ export default function RegisterPage() {
   const [phoneErrors, setPhoneErrors] = useState<string[]>([]);
   const [emailErrors, setEmailErrors] = useState<string[]>([]);
   const [showInfoModal, setShowInfoModal] = useState(true);
-  const [formSubmitted, setFormSubmitted] = useState(false);
+  // const [formSubmitted, setFormSubmitted] = useState(false);
 
   const validateEmail = useCallback((email: string) => {
     const errors: string[] = [];
@@ -140,7 +143,7 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setFormSubmitted(true);
+    // setFormSubmitted(true);
 
     if (!validateForm()) return;
 
@@ -182,7 +185,6 @@ export default function RegisterPage() {
       }
 
       const successResult = result as RegistrationResponse;
-      console.log("Registration Response:", successResult);
 
       setFormData({
         fullName: "",
@@ -194,12 +196,14 @@ export default function RegisterPage() {
         duration: 3000,
         position: "top-right",
       });
+      setFormSubmittedSuccessfully(true);
     } catch (err: any) {
       console.error("Registration Error:", err);
       toast.error(err.message || "Failed to register. Please try again.", {
         duration: 5000,
         position: "top-right",
       });
+      setFormSubmittedSuccessfully(false);
     } finally {
       setLoading(false);
     }
@@ -211,17 +215,40 @@ export default function RegisterPage() {
     }
   };
 
+  useEffect(() => {
+    const fetchCourses = async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetch(
+          `${import.meta.env.VITE_BASE_URL}/course/courses`,
+          {
+            headers: {
+              Accept: "application/json",
+            },
+          }
+        );
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const result = await response.json();
+        setCourses(result.courses || []);
+      } catch (err: any) {
+        console.error("Error fetching courses:", err);
+        toast.error(err.message || "Failed to load courses.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchCourses();
+  }, []);
+
   return (
     <div className="w-screen min-h-screen flex items-center justify-center bg-blue-50 dark:bg-gray-900 relative">
       <Toaster position="top-right" />
 
       {/* Success Modal */}
-      {formSubmitted &&
-        !loading &&
-        formData.fullName &&
-        formData.email &&
-        formData.phoneNumber &&
-        formData.track && (
+      {formSubmittedSuccessfully &&
+        (
           <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
             <div className="bg-gradient-to-br from-green-100 via-white to-green-200 dark:from-green-900 dark:via-gray-800 dark:to-green-900 p-6 rounded-xl shadow-2xl max-w-md w-full text-center space-y-4">
               <h2 className="text-3xl font-bold text-green-800 dark:text-green-200">
@@ -229,9 +256,7 @@ export default function RegisterPage() {
               </h2>
               <p className="text-gray-700 dark:text-gray-300">
                 You've successfully registered with RAD5 Brokers Network! Expect
-                updates regarding your journey via your email (
-                <strong>{formData.email}</strong>) or phone (
-                <strong>{formData.phoneNumber}</strong>). Feel free to visit us
+                updates regarding your journey via your email or phone . Feel free to visit us
                 at <strong>No.7 Factory Rd, 3rd Floor</strong> for more
                 assistance.
               </p>
@@ -247,10 +272,10 @@ export default function RegisterPage() {
                 </a>
               </p>
               <Button
-                onClick={() => navigate(`${import.meta.env.VITE_ACADEMY_WEBSITE}`)}
+                // onClick={() => navigate(`${import.meta.env.VITE_ACADEMY_WEBSITE}`)}
                 className="bg-green-600 text-white hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600 mt-4 px-6 py-3 rounded-lg transition-all duration-300 transform hover:scale-105"
               >
-                OK
+                <a href={`${import.meta.env.VITE_ACADEMY_WEBSITE}`}>Ok</a>
               </Button>
             </div>
           </div>
@@ -259,7 +284,7 @@ export default function RegisterPage() {
       {/* Info Modal */}
       {showInfoModal && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 h-screen">
-          <div className="w-[95%] max-w-4xl mx-auto bg-white/90 dark:bg-gray-800/90 backdrop-blur-md shadow-2xl rounded-xl h-[90vh] overflow-auto lg:p-6 p-2">
+          <div className="w-[95%] max-w-4xl mx-auto bg-white/90 dark:bg-gray-800/90 backdrop-blur-md shadow-2xl rounded-xl h-fit overflow-auto lg:p-6 p-2">
             <div className="relative">
               <img
                 src={Logo}
@@ -283,11 +308,9 @@ export default function RegisterPage() {
                   <strong>Digital Marketing</strong>,{" "}
                   <strong>Social Media Management</strong>, or more, our courses
                   are tailored to help you succeed. Each program varies in
-                  duration (2-6 months) and provides hands-on training with a 5%
-                  commission opportunity for referrals through the RAD5 Brokers
-                  Network.
+                  duration (2-6 months) and provides hands-on training.
                 </p>
-                <ul className="list-disc list-inside text-gray-600 dark:text-gray-400 space-y-2">
+                {/* <ul className="list-disc list-inside text-gray-600 dark:text-gray-400 space-y-2">
                   <li>
                     <strong>Frontend Web Development</strong>: 6 months - Build
                     responsive websites.
@@ -308,7 +331,7 @@ export default function RegisterPage() {
                     <strong>Social Media Management</strong>: 2 months - Manage
                     social platforms.
                   </li>
-                </ul>
+                </ul> */}
                 <div className="text-center">
                   <Button
                     onClick={() => setShowInfoModal(false)}
@@ -451,22 +474,22 @@ export default function RegisterPage() {
                     onValueChange={handleSelectChange}
                     disabled={loading}
                   >
-                    <SelectTrigger className="bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 border-gray-300 dark:border-gray-600">
+                    <SelectTrigger
+                      disabled={isLoading}
+                      className="bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 border-gray-300 dark:border-gray-600"
+                    >
                       <SelectValue placeholder="Select a track" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="Backend">Backend</SelectItem>
-                      <SelectItem value="Frontend">Frontend</SelectItem>
-                      <SelectItem value="Digital Marketing">
-                        Digital Marketing
-                      </SelectItem>
-                      <SelectItem value="Data Analytics">
-                        Data Analytics
-                      </SelectItem>
-                      <SelectItem value="UI/UX Design">UI/UX Design</SelectItem>
-                      <SelectItem value="Mobile App Development">
-                        Mobile App Development
-                      </SelectItem>
+                      {courses.map((course) => {
+                        return (
+                          <>
+                            <SelectItem value={`${course.courseName}`}>
+                              {course.courseName}
+                            </SelectItem>
+                          </>
+                        );
+                      })}
                     </SelectContent>
                   </Select>
                 </div>

@@ -34,7 +34,7 @@ export default function ReferralLinkSection({
     try {
       await navigator.clipboard.writeText(referralLink);
       
-      
+      toast.success("Referral Link Copied.")
     } catch (err) {
       console.error("Failed to copy referral link:", err);
       toast.error("Failed to copy link.");

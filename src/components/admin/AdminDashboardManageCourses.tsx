@@ -27,6 +27,7 @@ interface Course {
   id: string;
   courseName: string;
   price: number;
+  courseDuration:string;
   createdBy: string;
   createdAt: string;
   updatedAt: string;
@@ -40,6 +41,7 @@ export default function AdminDashboardManageCourses() {
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
   const [editedName, setEditedName] = useState("");
   const [editedPrice, setEditedPrice] = useState("");
+  const [editedCourseDuration, setEditedCourseDuration] = useState("");
   const {openSidebar} = useSidebar()
   const navigate = useNavigate();
 
@@ -87,6 +89,7 @@ export default function AdminDashboardManageCourses() {
     setEditingCourse(course);
     setEditedName(course.courseName);
     setEditedPrice(course.price.toString());
+    setEditedCourseDuration(course.courseDuration)
     setEditDialogOpen(true);
   };
 
@@ -114,6 +117,7 @@ export default function AdminDashboardManageCourses() {
           },
           body: JSON.stringify({
             courseName: editedName,
+            courseDuration:editedCourseDuration,
             price: parseFloat(editedPrice),
           }),
         }
@@ -125,15 +129,10 @@ export default function AdminDashboardManageCourses() {
       }
 
       const result = await response.json();
-      setCourses(
-        courses.map((c) =>
-          c.id === editingCourse.id
-            ? { ...c, courseName: editedName, price: parseFloat(editedPrice) }
-            : c
-        )
-      );
+    
       toast.success(result.message || "Course updated successfully!");
       setEditDialogOpen(false);
+      fetchCourses()
     } catch (err: any) {
       console.error("Error updating course:", err);
       toast.error(err.message || "Failed to update course.");
@@ -208,6 +207,8 @@ export default function AdminDashboardManageCourses() {
                   <TableRow>
                     <TableHead>Course Name</TableHead>
                     <TableHead>Price (₦)</TableHead>
+                    <TableHead>Duartion</TableHead>
+
                     <TableHead>Created At</TableHead>
                     <TableHead>Action</TableHead>
                   </TableRow>
@@ -217,6 +218,7 @@ export default function AdminDashboardManageCourses() {
                     <TableRow key={course.id}>
                       <TableCell>{course.courseName}</TableCell>
                       <TableCell>{course.price.toLocaleString()}</TableCell>
+                      <TableCell>{course.courseDuration}</TableCell>
                       <TableCell>
                         {new Date(course.createdAt).toLocaleDateString()}
                       </TableCell>
@@ -275,6 +277,19 @@ export default function AdminDashboardManageCourses() {
                     onChange={(e) => setEditedPrice(e.target.value)}
                     min="0"
                     step="0.01"
+                    required
+                    className="text-sm"
+                  />
+                </div>
+                 <div className="grid gap-2">
+                  <Label htmlFor="editPrice" className="text-sm">
+                    Duration
+                  </Label>
+                  <Input
+                    id="editCourseDuration"
+                    type="text"
+                    value={editedCourseDuration}
+                    onChange={(e) => setEditedCourseDuration(e.target.value)}
                     required
                     className="text-sm"
                   />

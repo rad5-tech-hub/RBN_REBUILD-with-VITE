@@ -6,7 +6,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DollarSign, ArrowUpRight, Clock } from "lucide-react";
-
+import { nigerianBanks } from "../../constants/nigerianBanks";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import {
   Table,
@@ -102,26 +102,7 @@ interface ErrorResponse {
 }
 
 // List of common Nigerian banks
-const nigerianBanks = [
-  "Access Bank",
-  "Citibank Nigeria",
-  "Ecobank Nigeria",
-  "Fidelity Bank",
-  "First Bank of Nigeria",
-  "First City Monument Bank (FCMB)",
-  "Guaranty Trust Bank (GTBank)",
-  "Heritage Bank",
-  "Keystone Bank",
-  "Polaris Bank",
-  "Stanbic IBTC Bank",
-  "Standard Chartered Bank",
-  "Sterling Bank",
-  "Union Bank of Nigeria",
-  "United Bank for Africa (UBA)",
-  "Wema Bank",
-  "Zenith Bank",
-  "Others",
-];
+
 
 // Withdrawal form schema
 const withdrawalSchema = (agentFullName: string) =>
@@ -701,7 +682,7 @@ export default function EarningsAndWithdrawals() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-lg sm:text-xl font-bold text-green-600 dark:text-green-400">
+                  <p className="text-lg sm:text-xl font-bold text-blue-600 dark:text-blue-400">
                     ₦{dashboardData?.stats.totalEarnings.toLocaleString() || 0}
                   </p>
                 </CardContent>

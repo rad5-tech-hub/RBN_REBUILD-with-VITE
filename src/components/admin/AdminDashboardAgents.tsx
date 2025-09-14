@@ -641,14 +641,14 @@ export default function AdminDashboardAgents() {
                       {currentAgentWallet.wallet.balance.toLocaleString()}
                     </p>
                     {currentAgentWallet.transactions.length > 0 ? (
-                      <div className="overflow-x-auto">
-                        <Table>
+                      <div className="overflow-x-auto  scrollbar-hide">
+                        <Table className="!text-white">
                           <TableHeader>
-                            <TableRow>
-                              <TableHead>Amount</TableHead>
-                              <TableHead>Type</TableHead>
-                              <TableHead>Date</TableHead>
-                              <TableHead>Description</TableHead>
+                            <TableRow className="!text-white">
+                              <TableHead className="!text-white">Amount</TableHead>
+                              <TableHead className="!text-white">Type</TableHead>
+                              <TableHead className="!text-white">Date</TableHead>
+                              <TableHead className="!text-white">Description</TableHead>
                             </TableRow>
                           </TableHeader>
                           <TableBody>
