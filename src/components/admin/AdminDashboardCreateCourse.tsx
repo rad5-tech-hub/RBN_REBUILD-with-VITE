@@ -16,6 +16,30 @@ export default function AdminDashboardCreateCourse() {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
+  // Format price with commas
+  const formatPrice = (value: string) => {
+    // Remove all non-digit except dot
+    const cleaned = value.replace(/[^\d.]/g, "");
+    // Split integer and decimal
+    const [integer, decimal] = cleaned.split(".");
+    const withCommas = integer.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return decimal !== undefined ? `${withCommas}.${decimal}` : withCommas;
+  };
+
+  // Only allow numbers and comma formatting
+  const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value;
+    // Remove all except digits and dot
+    value = value.replace(/[^\d.]/g, "");
+    // Only one dot allowed
+    const parts = value.split(".");
+    if (parts.length > 2) {
+      value = parts[0] + "." + parts.slice(1).join("");
+    }
+    // Format with commas
+    setPrice(formatPrice(value));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -28,7 +52,9 @@ export default function AdminDashboardCreateCourse() {
         return;
       }
 
-      const apiBaseUrl = import.meta.env.VITE_BASE_URL
+      const apiBaseUrl = import.meta.env.VITE_BASE_URL;
+      // Remove commas before sending
+      const priceValue = price.replace(/,/g, "");
       const response = await fetch(`${apiBaseUrl}/course/create-course`, {
         method: "POST",
         headers: {
@@ -38,8 +64,8 @@ export default function AdminDashboardCreateCourse() {
         },
         body: JSON.stringify({
           courseName,
-          courseDuration:duration,
-          price: parseFloat(price),
+          courseDuration: duration,
+          price: parseFloat(priceValue),
         }),
       });
 
@@ -52,9 +78,8 @@ export default function AdminDashboardCreateCourse() {
       toast.success(result.message || "Course created successfully!");
       setCourseName("");
       setPrice("");
-      setDuration("")
+      setDuration("");
     } catch (err: any) {
-      
       toast.error(err.message || "Failed to create course.");
       if (err.message.includes("401")) {
         navigate("/admin/signin");
@@ -118,14 +143,14 @@ export default function AdminDashboardCreateCourse() {
                 </Label>
                 <Input
                   id="price"
-                  type="number"
+                  type="text"
+                  inputMode="decimal"
                   value={price}
-                  onChange={(e) => setPrice(e.target.value)}
+                  onChange={handlePriceChange}
                   placeholder="Enter price"
-                  min="0"
-                  step="0.01"
                   required
                   className="text-sm"
+                  autoComplete="off"
                 />
               </div>
               <div className="grid gap-2 mt-6">

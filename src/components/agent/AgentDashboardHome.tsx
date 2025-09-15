@@ -355,7 +355,7 @@ const AgentDashboardHome = () => {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="p-2 text-2xl sm:text-3xl font-bold text-gray-800 dark:text-gray-100">
+                  <div className="p-2 text-2xl sm:text-3xl font-bold text-blue-800 dark:text-blue-300">
                     {totalReferrals}
                   </div>
                 </CardContent>
@@ -368,7 +368,7 @@ const AgentDashboardHome = () => {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="p-2 text-2xl sm:text-3xl font-bold text-gray-800 dark:text-gray-100">
+                  <div className="p-2 text-2xl sm:text-3xl font-bold text-green-800 dark:text-green-300">
                     {totalWithdrawals}
                   </div>
                 </CardContent>
@@ -381,7 +381,7 @@ const AgentDashboardHome = () => {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="p-2 text-2xl sm:text-3xl font-bold text-gray-800 dark:text-gray-100">
+                  <div className="p-2 text-2xl sm:text-3xl font-bold text-yellow-500 dark:text-yellow-300">
                     ₦{totalEarnings.toLocaleString()}
                   </div>
                 </CardContent>

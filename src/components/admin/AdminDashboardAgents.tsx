@@ -105,7 +105,7 @@ export default function AdminDashboardAgents() {
     userId: string;
     amountPaid: number;
     commissionRate: number;
-  }>({ userId: "", amountPaid: 0, commissionRate: 0.1 });
+  }>({ userId: "", amountPaid: 0, commissionRate: 0.1 }); // 0.1 = 10% commission rate
   
   const [isFunding, setIsFunding] = useState<boolean>(false);
   const [agentUsers, setAgentUsers] = useState<User[]>([]);
@@ -280,6 +280,17 @@ export default function AdminDashboardAgents() {
 
       const apiBaseUrl = import.meta.env.VITE_BASE_URL;
       const endpoint = `${apiBaseUrl}/wallet/mark-paid`;
+      
+      // Ensure amount is a clean number without any formatting
+      const cleanAmountPaid = typeof fundData.amountPaid === 'number' 
+        ? fundData.amountPaid 
+        : parseFloat(String(fundData.amountPaid).replace(/[^0-9.]/g, ''));
+
+      const payload = {
+        ...fundData,
+        amountPaid: cleanAmountPaid,
+      };
+
       const response = await fetch(endpoint, {
         method: "POST",
         headers: {
@@ -287,7 +298,7 @@ export default function AdminDashboardAgents() {
           Accept: "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(fundData),
+        body: JSON.stringify(payload),
       });
 
       const result: FundAgentResponse = await response.json();
@@ -302,7 +313,7 @@ export default function AdminDashboardAgents() {
           result.error || result.message || `HTTP ${response.status}`
         );
       }
-      setFundData({ userId: "", amountPaid: 0, commissionRate: 0.1 });
+      setFundData({ userId: "", amountPaid: 0, commissionRate: 0.1 }); // Reset to 10% commission rate
       if (selectedAgentId) {
         await fetchAgentUsers(selectedAgentId);
       }
@@ -548,16 +559,41 @@ export default function AdminDashboardAgents() {
                           </Label>
                           <Input
                             id="amountPaid"
-                            type="number"
-                            value={fundData.amountPaid || ""}
-                            onChange={(e) =>
+                            type="text"
+                            value={fundData.amountPaid ? fundData.amountPaid.toLocaleString() : ''}
+                            onChange={(e) => {
+                              // Remove commas and non-numeric characters except decimal point
+                              const cleanValue = e.target.value.replace(/[^0-9.]/g, '');
+                              // Prevent multiple decimal points
+                              const parts = cleanValue.split('.');
+                              const formattedValue = parts.length > 2 
+                                ? parts[0] + '.' + parts.slice(1).join('')
+                                : cleanValue;
+                              
+                              const numericValue = parseFloat(formattedValue) || 0;
                               setFundData({
                                 ...fundData,
-                                amountPaid: parseFloat(e.target.value) || 0,
-                              })
-                            }
+                                amountPaid: numericValue,
+                              });
+                            }}
+                            onKeyDown={(e) => {
+                              // Allow: backspace, delete, tab, escape, enter, decimal point
+                              if ([8, 9, 27, 13, 46, 110, 190].indexOf(e.keyCode) !== -1 ||
+                                  // Allow: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+                                  (e.keyCode === 65 && e.ctrlKey === true) ||
+                                  (e.keyCode === 67 && e.ctrlKey === true) ||
+                                  (e.keyCode === 86 && e.ctrlKey === true) ||
+                                  (e.keyCode === 88 && e.ctrlKey === true) ||
+                                  // Allow: home, end, left, right, down, up
+                                  (e.keyCode >= 35 && e.keyCode <= 40)) {
+                                return;
+                              }
+                              // Ensure that it is a number and stop the keypress
+                              if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                                e.preventDefault();
+                              }
+                            }}
                             placeholder="Enter amount"
-                            min={0}
                             className="text-sm bg-gray-800/50 border-gray-600 text-white"
                           />
                         </div>
@@ -566,23 +602,46 @@ export default function AdminDashboardAgents() {
                             htmlFor="commissionRate"
                             className="text-sm drop-shadow-sm text-white"
                           >
-                            Commission Rate
+                            Commission Rate (%)
                           </Label>
                           <Input
                             id="commissionRate"
-                            type="number"
-                            step="0.01"
-                            value={fundData.commissionRate || ""}
-                            onChange={(e) =>
+                            type="text"
+                            value={fundData.commissionRate ? (fundData.commissionRate * 100).toString() : ''}
+                            onChange={(e) => {
+                              // Remove non-numeric characters except decimal point
+                              const cleanValue = e.target.value.replace(/[^0-9.]/g, '');
+                              // Prevent multiple decimal points
+                              const parts = cleanValue.split('.');
+                              const formattedValue = parts.length > 2 
+                                ? parts[0] + '.' + parts.slice(1).join('')
+                                : cleanValue;
+                              
+                              const numericValue = parseFloat(formattedValue) || 0;
+                              // Store as decimal (divide by 100)
                               setFundData({
                                 ...fundData,
-                                commissionRate:
-                                  parseFloat(e.target.value) || 0.1,
-                              })
-                            }
-                            placeholder="e.g., 0.1"
-                            min={0}
-                            max={1}
+                                commissionRate: numericValue / 100,
+                              });
+                            }}
+                            onKeyDown={(e) => {
+                              // Allow: backspace, delete, tab, escape, enter, decimal point
+                              if ([8, 9, 27, 13, 46, 110, 190].indexOf(e.keyCode) !== -1 ||
+                                  // Allow: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+                                  (e.keyCode === 65 && e.ctrlKey === true) ||
+                                  (e.keyCode === 67 && e.ctrlKey === true) ||
+                                  (e.keyCode === 86 && e.ctrlKey === true) ||
+                                  (e.keyCode === 88 && e.ctrlKey === true) ||
+                                  // Allow: home, end, left, right, down, up
+                                  (e.keyCode >= 35 && e.keyCode <= 40)) {
+                                return;
+                              }
+                              // Ensure that it is a number and stop the keypress
+                              if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                                e.preventDefault();
+                              }
+                            }}
+                            placeholder="e.g., 10"
                             className="text-sm bg-gray-800/50 border-gray-600 text-white"
                           />
                         </div>

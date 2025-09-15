@@ -108,20 +108,22 @@ interface ErrorResponse {
 const withdrawalSchema = (agentFullName: string) =>
   z.object({
     amount: z
-      .number()
+      .number("Amount must be a number")
       .min(1000, "Amount must be at least ₦1,000")
       .max(1000000, "Amount cannot exceed ₦1,000,000"),
-    bankName: z.string().min(1, "Bank name is required"),
+    bankName: z
+      .string("Bank name is required")
+      .min(1, "Bank name is required"),
     accountNumber: z
-      .string()
+      .string("Account number is required")
       .length(10, "Account number must be 10 digits")
       .regex(/^\d{10}$/, "Account number must be numeric"),
     accountName: z
-      .string()
+      .string("Account name is required")
       .min(1, "Account name is required")
       .refine(
         (value) => {
-          if (!agentFullName) return true; // Skip validation if agentFullName is not yet available
+          if (!agentFullName || !value) return true; // Skip validation if agentFullName is not yet available or value is empty
           const agentNameParts = agentFullName.toLowerCase().split(" ");
           const inputNameParts = value.toLowerCase().split(" ");
           return agentNameParts.some((part) =>
@@ -176,6 +178,7 @@ export default function EarningsAndWithdrawals() {
     resolver: zodResolver(
       withdrawalSchema(dashboardData?.agent.fullName || "")
     ),
+    mode: "onBlur", // Only validate on blur, not on change
     defaultValues: {
       amount: 0,
       bankName: "",
@@ -193,7 +196,7 @@ export default function EarningsAndWithdrawals() {
       accountName: "",
     });
     form.clearErrors();
-    form.trigger(); // Re-validate with new schema
+    // Don't trigger validation immediately - let user interact first
   }, [dashboardData?.agent.fullName, form]);
 
   // Fetch dashboard data
@@ -362,6 +365,8 @@ export default function EarningsAndWithdrawals() {
 
       const description = `Withdrawal request for ₦${values.amount}`;
   
+      // Ensure amount is a clean number without any formatting
+      const cleanAmount = typeof values.amount === 'number' ? values.amount : parseFloat(String(values.amount).replace(/[^0-9.]/g, ''));
 
       const response = await fetch(`${apiBaseUrl}/withdrawal/request`, {
         method: "POST",
@@ -372,6 +377,7 @@ export default function EarningsAndWithdrawals() {
         },
         body: JSON.stringify({
           ...values,
+          amount: cleanAmount,
           description,
         }),
       });
@@ -540,13 +546,39 @@ export default function EarningsAndWithdrawals() {
                       <FormLabel>Amount (₦)</FormLabel>
                       <FormControl>
                         <Input
-                          type="number"
+                          type="text"
                           placeholder="Enter amount"
                           className="text-sm h-9 sm:h-10"
-                          {...field}
-                          onChange={(e) =>
-                            field.onChange(parseFloat(e.target.value))
-                          }
+                          value={field.value ? field.value.toLocaleString() : ''}
+                          onChange={(e) => {
+                            // Remove commas and non-numeric characters except decimal point
+                            const cleanValue = e.target.value.replace(/[^0-9.]/g, '');
+                            // Prevent multiple decimal points
+                            const parts = cleanValue.split('.');
+                            const formattedValue = parts.length > 2 
+                              ? parts[0] + '.' + parts.slice(1).join('')
+                              : cleanValue;
+                            
+                            const numericValue = parseFloat(formattedValue) || 0;
+                            field.onChange(numericValue);
+                          }}
+                          onKeyDown={(e) => {
+                            // Allow: backspace, delete, tab, escape, enter, decimal point
+                            if ([8, 9, 27, 13, 46, 110, 190].indexOf(e.keyCode) !== -1 ||
+                                // Allow: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+                                (e.keyCode === 65 && e.ctrlKey === true) ||
+                                (e.keyCode === 67 && e.ctrlKey === true) ||
+                                (e.keyCode === 86 && e.ctrlKey === true) ||
+                                (e.keyCode === 88 && e.ctrlKey === true) ||
+                                // Allow: home, end, left, right, down, up
+                                (e.keyCode >= 35 && e.keyCode <= 40)) {
+                              return;
+                            }
+                            // Ensure that it is a number and stop the keypress
+                            if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                              e.preventDefault();
+                            }
+                          }}
                         />
                       </FormControl>
                       <FormMessage className="text-xs text-red-500" />

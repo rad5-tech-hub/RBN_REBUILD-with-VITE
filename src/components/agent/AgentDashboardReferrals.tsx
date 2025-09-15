@@ -69,7 +69,6 @@ interface ErrorResponse {
 }
 
 export default function AgentDashBoardReferrals() {
-  
   const [dashboardData, setDashboardData] = useState<DashboardResponse | null>(
     null
   );
@@ -122,7 +121,6 @@ export default function AgentDashBoardReferrals() {
 
         if (mounted) {
           setDashboardData(data);
-          
         }
       } catch (err: any) {
         if (err.name === "AbortError") return;
@@ -149,7 +147,6 @@ export default function AgentDashBoardReferrals() {
   useEffect(() => {
     // Log window size, card, and table dimensions for debugging
     const handleResize = () => {
-   
       const table = document.querySelector("table") as HTMLElement | null;
       if (table) {
       }
@@ -220,7 +217,7 @@ export default function AgentDashBoardReferrals() {
           toast.error("Native sharing not supported.", { duration: 5000 });
           return;
         }
-        break
+        break;
       default:
         return;
     }
@@ -228,7 +225,21 @@ export default function AgentDashBoardReferrals() {
     window.open(url, "_blank");
     toast.success(`Shared to ${platform}!`, { duration: 3000 });
   };
-  const {openSidebar} = useSidebar()
+  const { openSidebar } = useSidebar();
+
+  const colorCodeForPaymentStatus = (color: string) => {
+    switch (color) {
+      case "unpaid":
+        return "text-red-500";
+
+      case "paid":
+        return "text-green-500";
+
+      default:
+        return "text-blue-500";
+        break;
+    }
+  };
 
   const referredUsers = dashboardData?.stats.referredUsers || [];
 
@@ -238,7 +249,7 @@ export default function AgentDashBoardReferrals() {
         <button
           className="lg:hidden mb-2 p-2 bg-gray-800 text-white rounded-md min-w-10 min-h-10"
           onClick={() => {
-            openSidebar()
+            openSidebar();
           }}
           aria-label="Toggle sidebar"
         >
@@ -435,7 +446,11 @@ export default function AgentDashBoardReferrals() {
                               <TableCell className="text-sm px-2 sm:px-4 py-2 max-w-[60px] overflow-ellipsis whitespace-nowrap sm:truncate">
                                 {user.track || "N/A"}
                               </TableCell>
-                              <TableCell className="text-sm px-2 sm:px-4 py-2 max-w-[80px] overflow-ellipsis whitespace-nowrap sm:truncate">
+                              <TableCell
+                                className={`text-sm px-2 sm:px-4 py-2 max-w-[80px] overflow-ellipsis whitespace-nowrap sm:truncate ${colorCodeForPaymentStatus(
+                                  user.paymentStatus
+                                )}`}
+                              >
                                 {user.paymentStatus || "N/A"}
                               </TableCell>
                               <TableCell className="text-sm px-2 sm:px-4 py-2 max-w-[60px] overflow-ellipsis whitespace-nowrap sm:truncate">
