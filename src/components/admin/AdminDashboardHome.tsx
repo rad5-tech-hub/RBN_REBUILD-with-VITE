@@ -196,7 +196,7 @@ const AdminDashboardHome = () => {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="p-2 text-xl sm:text-2xl font-bold text-gray-800 dark:text-gray-100">
+              <div className="p-2 text-xl sm:text-2xl font-bold text-blue-500 dark:text-blue-400">
                 {dashboardData!.stats.totalAgents}
               </div>
             </CardContent>
@@ -205,13 +205,13 @@ const AdminDashboardHome = () => {
             <CardHeader>
               <div className="flex items-center space-x-2">
                 <Users className="h-5 sm:h-6 w-5 sm:w-6 text-green-500" />
-                <CardTitle className="text-sm sm:text-lg">
+                <CardTitle className="text-sm sm:text-lg ">
                   Total Users
                 </CardTitle>
               </div>
             </CardHeader>
             <CardContent>
-              <div className="p-2 text-xl sm:text-2xl font-bold text-gray-800 dark:text-gray-100">
+              <div className="p-2 text-xl sm:text-2xl font-bold text-green-500 dark:text-green-400">
                 {dashboardData!.stats.totalUsers}
               </div>
             </CardContent>
@@ -226,7 +226,7 @@ const AdminDashboardHome = () => {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="p-2 text-xl sm:text-2xl font-bold text-gray-800 dark:text-gray-100">
+              <div className="p-2 text-xl sm:text-2xl font-bold text-yellow-500 dark:text-yellow-400">
                 ₦{dashboardData!.stats.totalAgentEarnings.toLocaleString()}
               </div>
             </CardContent>
@@ -241,7 +241,7 @@ const AdminDashboardHome = () => {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="p-2 text-xl sm:text-2xl font-bold text-gray-800 dark:text-gray-100">
+              <div className="p-2 text-xl sm:text-2xl font-bold text-red-500 dark:text-red-400">
                 ₦{dashboardData!.stats.totalWithdrawals.toLocaleString()}
               </div>
             </CardContent>

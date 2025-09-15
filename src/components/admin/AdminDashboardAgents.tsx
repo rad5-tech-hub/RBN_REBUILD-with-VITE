@@ -105,7 +105,7 @@ export default function AdminDashboardAgents() {
     userId: string;
     amountPaid: number;
     commissionRate: number;
-  }>({ userId: "", amountPaid: 0, commissionRate: 0.1 }); // 0.1 = 10% commission rate
+  }>({ userId: "", amountPaid: 0, commissionRate: 0.1 }); 
   
   const [isFunding, setIsFunding] = useState<boolean>(false);
   const [agentUsers, setAgentUsers] = useState<User[]>([]);
