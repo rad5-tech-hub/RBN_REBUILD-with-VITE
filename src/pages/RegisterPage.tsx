@@ -51,7 +51,7 @@ interface ErrorResponse {
 }
 
 export default function RegisterPage() {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const { id } = useParams();
   const [courses, setCourses] = useState<Course[]>([]);
   const [isLoading, setIsLoading] = useState(true);
