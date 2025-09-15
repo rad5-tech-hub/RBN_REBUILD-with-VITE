@@ -1,7 +1,6 @@
 import { useState, type FormEvent, useCallback, useEffect } from "react";
 import { type Course } from "../components/LandingPageClient";
 import Logo from "..//assets/images/rad5hub.png";
-import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { toast, Toaster } from "react-hot-toast";
 import {
