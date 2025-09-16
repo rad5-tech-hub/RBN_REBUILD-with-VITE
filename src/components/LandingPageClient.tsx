@@ -184,25 +184,25 @@ export default function LandingPageClient() {
             <div className="hidden md:flex space-x-6" role="navigation">
               <a
                 href="#features"
-                className="text-black dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100"
+                className="text-white dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100"
               >
                 Features
               </a>
               <a
                 href="#programs"
-                className="text-black dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100"
+                className="text-white  hover:text-gray-800 dark:hover:text-gray-100"
               >
                 Programs
               </a>
               <a
                 href="#testimonials"
-                className="text-black dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100"
+                className="text-white dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100"
               >
                 Testimonials
               </a>
               <a
                 href="#contact"
-                className="text-black dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100"
+                className="text-white dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100"
               >
                 Contact
               </a>
@@ -212,7 +212,7 @@ export default function LandingPageClient() {
             <Button
               asChild
               variant="ghost"
-              className="text-gray-800 dark:text-gray-100"
+              className="text-white dark:text-gray-100"
               aria-label="Sign In"
             >
               <a href="/signin">Sign In</a>
@@ -284,7 +284,7 @@ export default function LandingPageClient() {
                     aria-label="RAD5 Brokers Network Home"
                   >
                     <img
-                      src="/rad5hub.png"
+                      src={Logo}
                       alt="RAD5 Logo"
                       width={70}
                       height={70}
@@ -383,7 +383,7 @@ export default function LandingPageClient() {
                 >
                   <SelectTrigger className="bg-transparent border-none text-white dark:text-gray-100 w-full max-w-xs flex items-center justify-between pr-2">
                     <span>{selectedCourseName || "Select a Course"}</span>
-                    <ChevronDown className="h-6 w-6 text-white dark:text-gray-200" />
+                    {/* <ChevronDown className="h-6 w-6 text-white dark:text-gray-200" /> */}
                   </SelectTrigger>
                   <SelectContent
                     position="popper"
