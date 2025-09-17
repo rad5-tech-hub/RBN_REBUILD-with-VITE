@@ -10,6 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
+
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
@@ -669,7 +670,7 @@ export default function AdminDashboardAgents() {
             )}
             {isTransactionModalOpen && currentAgentWallet && (
               <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-                <div className="bg-gray-900 rounded-lg max-w-[90vw] sm:max-w-2xl w-full p-4 sm:p-6">
+                <div className="bg-gray-900 rounded-lg max-w-fit sm:max-w-2xl w-full p-4 sm:p-6">
                   <div className="flex justify-between items-center mb-4">
                     <h2 className="text-base sm:text-lg text-white drop-shadow-sm">
                       {currentAgentWallet.agent.name}’s Transactions
@@ -700,8 +701,8 @@ export default function AdminDashboardAgents() {
                       {currentAgentWallet.wallet.balance.toLocaleString()}
                     </p>
                     {currentAgentWallet.transactions.length > 0 ? (
-                      <div className="overflow-x-auto  scrollbar-hide">
-                        <Table className="!text-white">
+                      <div className="overflow-x-auto  !scrollbar-hide scroll-hide">
+                        <Table className="!text-white w-full">
                           <TableHeader>
                             <TableRow className="!text-white">
                               <TableHead className="!text-white">Amount</TableHead>

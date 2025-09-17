@@ -267,14 +267,14 @@ export default function RegisterPage() {
                   rel="noopener noreferrer"
                   className="text-blue-600 dark:text-blue-400 hover:underline"
                 >
-                  https://rad5.com.ng/
+                  https://academy.rad5.com.ng/
                 </a>
               </p>
               <Button
-                // onClick={() => navigate(`${import.meta.env.VITE_ACADEMY_WEBSITE}`)}
+                onClick={() => setFormSubmittedSuccessfully(false)}
                 className="bg-green-600 text-white hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600 mt-4 px-6 py-3 rounded-lg transition-all duration-300 transform hover:scale-105"
               >
-                <a href={`${import.meta.env.VITE_ACADEMY_WEBSITE}`}>Ok</a>
+                Ok
               </Button>
             </div>
           </div>

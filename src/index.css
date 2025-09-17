@@ -3,3 +3,12 @@
 *{
   font-family: "Poppins",sans-serif;
 }
+
+.scroll-hide {
+  overflow-x: auto; /* keeps scrolling */
+  scrollbar-width: none; /* Firefox */
+}
+
+.scroll-hide::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Edge */
+}

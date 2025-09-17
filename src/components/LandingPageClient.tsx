@@ -49,9 +49,9 @@ export interface Course {
 
 
 const stats: { label: string; value: number }[] = [
-  { label: "Ambassadors", value: 0 },
-  { label: "Referrals", value: 0 },
-  { label: "Commissions Paid (₦)", value: 0 },
+  { label: "Ambassadors", value: 20 },
+  { label: "Referrals", value: 50 },
+  { label: "Commissions Paid (₦)", value: 500000 },
 ];
 
 export default function LandingPageClient() {
