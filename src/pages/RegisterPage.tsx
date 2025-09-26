@@ -246,39 +246,36 @@ export default function RegisterPage() {
       <Toaster position="top-right" />
 
       {/* Success Modal */}
-      {formSubmittedSuccessfully &&
-        (
-          <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-            <div className="bg-gradient-to-br from-green-100 via-white to-green-200 dark:from-green-900 dark:via-gray-800 dark:to-green-900 p-6 rounded-xl shadow-2xl max-w-md w-full text-center space-y-4">
-              <h2 className="text-3xl font-bold text-green-800 dark:text-green-200">
-                Congratulations!
-              </h2>
-              <p className="text-gray-700 dark:text-gray-300">
-                You've successfully registered with RAD5 Brokers Network! Expect
-                updates regarding your journey via your email or phone . Feel free to visit us
-                at <strong>No.7 Factory Rd, 3rd Floor</strong> for more
-                assistance.
-              </p>
-              <p className="text-gray-600 dark:text-gray-400">
-                Explore more at{" "}
-                <a
-                  href={`${import.meta.env.VITE_ACADEMY_WEBSITE}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 dark:text-blue-400 hover:underline"
-                >
-                  https://academy.rad5.com.ng/
-                </a>
-              </p>
-              <Button
-                onClick={() => setFormSubmittedSuccessfully(false)}
-                className="bg-green-600 text-white hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600 mt-4 px-6 py-3 rounded-lg transition-all duration-300 transform hover:scale-105"
+      {formSubmittedSuccessfully && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+          <div className="bg-gradient-to-br from-green-100 via-white to-green-200 dark:from-green-900 dark:via-gray-800 dark:to-green-900 p-6 rounded-xl shadow-2xl max-w-md w-full text-center space-y-4">
+            <h2 className="text-3xl font-bold text-green-800 dark:text-green-200">
+              Congratulations!
+            </h2>
+            <p className="text-gray-700 dark:text-gray-300">
+              You’ve successfully registered for our Digital Skills Training
+              Program. Stay tuned for updates via email or phone
+            </p>
+            <p className="text-gray-600 dark:text-gray-400">
+              Explore more at{" "}
+              <a
+                href={`${import.meta.env.VITE_ACADEMY_WEBSITE}/programs`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 dark:text-blue-400 hover:underline"
               >
-                Ok
-              </Button>
-            </div>
+                https://academy.rad5.com.ng/programs
+              </a>
+            </p>
+            <Button
+              onClick={() => setFormSubmittedSuccessfully(false)}
+              className="bg-green-600 text-white hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600 mt-4 px-6 py-3 rounded-lg transition-all duration-300 transform hover:scale-105"
+            >
+              Ok
+            </Button>
           </div>
-        )}
+        </div>
+      )}
 
       {/* Info Modal */}
       {showInfoModal && (
