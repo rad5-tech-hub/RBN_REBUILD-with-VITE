@@ -59,7 +59,7 @@ const AgentDashboardHome = () => {
     if (!platform && navigator.share) {
       try {
         await navigator.share({
-          title: "Join My RAD5 Referral Program",
+          title: "change the whatsapp message from Hey! Join my RAD5 Brokers Network referral program and start earning with elite tech training. Use my link:",
           text: shareText,
           url: referralLink,
         });
@@ -96,7 +96,7 @@ const AgentDashboardHome = () => {
         case "native":
           if (navigator.share) {
             await navigator.share({
-              title: "Join My RAD5 Referral Program",
+              title: "change the whatsapp message from Hey! Join my RAD5 Brokers Network referral program and start earning with elite tech training.Use my link: ",
               text: shareText,
               url: referralLink,
             });
