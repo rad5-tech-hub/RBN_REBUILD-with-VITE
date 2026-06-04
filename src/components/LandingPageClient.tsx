@@ -73,22 +73,22 @@ export default function LandingPageClient() {
     title: string;
     description: string;
   }[] = [
-    {
-      icon: <Code className="h-8 w-8 text-gray-700 dark:text-gray-300" />,
-      title: "Promote Elite Courses",
-      description: "Share RAD5 Tech Hub’s top-tier tech programs.",
-    },
-    {
-      icon: <Users className="h-8 w-8 text-gray-700 dark:text-gray-300" />,
-      title: "Grow Your Reach",
-      description: "Refer clients with your unique link.",
-    },
-    {
-      icon: <DollarSign className="h-8 w-8 text-gray-700 dark:text-gray-300" />,
-      title: "Earn Instantly",
-      description: "Get 5% commission per enrollment.",
-    },
-  ];
+      {
+        icon: <Code className="h-8 w-8 text-gray-700 dark:text-gray-300" />,
+        title: "Sign Up & Connect",
+        description: "Join the RAD5 Broker Network. Our quick onboarding ensures you understand the process and are ready to take action.",
+      },
+      {
+        icon: <Users className="h-8 w-8 text-gray-700 dark:text-gray-300" />,
+        title: "Promote & Refer",
+        description: "Share your passion for our bootcamp courses with your network.",
+      },
+      {
+        icon: <DollarSign className="h-8 w-8 text-gray-700 dark:text-gray-300" />,
+        title: "Earn Rewards",
+        description: "Get paid commissions for every successful referral that converts into a registration.",
+      },
+    ];
 
   const calculateCommission = (price: number) => {
     setCommission(price * 0.05);
@@ -233,9 +233,8 @@ export default function LandingPageClient() {
             <button
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
               className="p-2 rounded-full hover:bg-gray-200/20 dark:hover:bg-gray-700/20"
-              aria-label={`Switch to ${
-                theme === "dark" ? "light" : "dark"
-              } mode`}
+              aria-label={`Switch to ${theme === "dark" ? "light" : "dark"
+                } mode`}
             >
               {theme === "dark" ? (
                 <Sun className="h-5 w-5 text-gray-300" />
@@ -377,7 +376,7 @@ export default function LandingPageClient() {
               <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4 bg-white/20 dark:bg-gray-800/20 rounded-lg p-4">
                 <Select
                   value={selectedCourseId || ""}
-                  onValueChange={(value: any) => setSelectedCourseId(value)}
+                  onValueChange={(value: string) => setSelectedCourseId(value)}
                   aria-label="Select a course"
                 >
                   <SelectTrigger className="bg-transparent border-none text-white dark:text-gray-100 w-full max-w-xs flex items-center justify-between pr-2">
@@ -559,8 +558,7 @@ export default function LandingPageClient() {
                         }
                       />
                     ) : (
-                      `${stat.label === "Commissions Paid (₦)" ? "₦" : ""}0${
-                        stat.label === "Commissions Paid (₦)" ? "" : "+"
+                      `${stat.label === "Commissions Paid (₦)" ? "₦" : ""}0${stat.label === "Commissions Paid (₦)" ? "" : "+"
                       }`
                     )}
                   </motion.span>
@@ -641,7 +639,7 @@ export default function LandingPageClient() {
       >
         <section className=" dark:text-white text-gray-900 p-6">
           <div className="container text-center">
-            © All Copyright 2025 by{" "}
+            © All Copyright 2026 by{" "}
             <a href="https://rad5.com.ng/" className="underline">
               RAD5 Tech Hub
             </a>

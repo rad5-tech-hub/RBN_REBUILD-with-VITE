@@ -131,9 +131,8 @@ const withdrawalSchema = (agentFullName: string) =>
           );
         },
         {
-          message: `Account name must be related to your registered name (${
-            agentFullName || "your name"
-          })`,
+          message: `Account name must be related to your registered name (${agentFullName || "your name"
+            })`,
         }
       ),
   });
@@ -155,8 +154,8 @@ const formatCreditDescription = (description: string, type: string) => {
 };
 
 export default function EarningsAndWithdrawals() {
-  
-  const {openSidebar} = useSidebar()
+
+  const { openSidebar } = useSidebar()
   const [dashboardData, setDashboardData] = useState<DashboardResponse | null>(
     null
   );
@@ -225,13 +224,13 @@ export default function EarningsAndWithdrawals() {
           const errorResult = (await response.json()) as ErrorResponse;
           throw new Error(
             errorResult.message ||
-              errorResult.error ||
-              `HTTP ${response.status}: ${response.statusText}`
+            errorResult.error ||
+            `HTTP ${response.status}: ${response.statusText}`
           );
         }
 
         const data: DashboardResponse = await response.json();
-        
+
 
         if (mounted) {
           setDashboardData(data);
@@ -278,7 +277,7 @@ export default function EarningsAndWithdrawals() {
           );
         }
 
-       
+
         const response = await fetch(
           `${apiBaseUrl}/withdrawal/withdrawals/${agentId}`,
           {
@@ -292,13 +291,13 @@ export default function EarningsAndWithdrawals() {
           }
         );
 
-       
+
         if (!response.ok) {
           const errorResult = (await response.json()) as ErrorResponse;
           throw new Error(
             errorResult.message ||
-              errorResult.error ||
-              `HTTP ${response.status}: ${response.statusText}`
+            errorResult.error ||
+            `HTTP ${response.status}: ${response.statusText}`
           );
         }
 
@@ -342,7 +341,7 @@ export default function EarningsAndWithdrawals() {
   // Debug layout dimensions
   useEffect(() => {
     const handleResize = () => {
-   
+
     };
     handleResize();
     window.addEventListener("resize", handleResize);
@@ -364,7 +363,7 @@ export default function EarningsAndWithdrawals() {
       }
 
       const description = `Withdrawal request for ₦${values.amount}`;
-  
+
       // Ensure amount is a clean number without any formatting
       const cleanAmount = typeof values.amount === 'number' ? values.amount : parseFloat(String(values.amount).replace(/[^0-9.]/g, ''));
 
@@ -382,13 +381,13 @@ export default function EarningsAndWithdrawals() {
         }),
       });
 
-    
+
       if (!response.ok) {
         const errorResult = (await response.json()) as ErrorResponse;
         throw new Error(
           errorResult.message ||
-            errorResult.error ||
-            `HTTP ${response.status}: ${response.statusText}`
+          errorResult.error ||
+          `HTTP ${response.status}: ${response.statusText}`
         );
       }
 
@@ -417,8 +416,8 @@ export default function EarningsAndWithdrawals() {
   // Calculate pending withdrawals
   const pendingWithdrawals = withdrawalHistory
     ? withdrawalHistory
-        .filter((w) => w.status === "pending")
-        .reduce((sum, w) => sum + w.amount, 0)
+      .filter((w) => w.status === "pending")
+      .reduce((sum, w) => sum + w.amount, 0)
     : 0;
 
   // Calculate balance
@@ -457,7 +456,7 @@ export default function EarningsAndWithdrawals() {
   );
   const totalPages = Math.ceil(allTransactions.length / itemsPerPage);
 
-  
+
   const nextPage = () =>
     setCurrentPage((prev) => Math.min(prev + 1, totalPages));
   const prevPage = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
@@ -490,7 +489,7 @@ export default function EarningsAndWithdrawals() {
 
   return (
     <div className="flex min-h-screen bg-gray-100 dark:bg-gray-900">
-      
+
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -555,23 +554,23 @@ export default function EarningsAndWithdrawals() {
                             const cleanValue = e.target.value.replace(/[^0-9.]/g, '');
                             // Prevent multiple decimal points
                             const parts = cleanValue.split('.');
-                            const formattedValue = parts.length > 2 
+                            const formattedValue = parts.length > 2
                               ? parts[0] + '.' + parts.slice(1).join('')
                               : cleanValue;
-                            
+
                             const numericValue = parseFloat(formattedValue) || 0;
                             field.onChange(numericValue);
                           }}
                           onKeyDown={(e) => {
                             // Allow: backspace, delete, tab, escape, enter, decimal point
                             if ([8, 9, 27, 13, 46, 110, 190].indexOf(e.keyCode) !== -1 ||
-                                // Allow: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
-                                (e.keyCode === 65 && e.ctrlKey === true) ||
-                                (e.keyCode === 67 && e.ctrlKey === true) ||
-                                (e.keyCode === 86 && e.ctrlKey === true) ||
-                                (e.keyCode === 88 && e.ctrlKey === true) ||
-                                // Allow: home, end, left, right, down, up
-                                (e.keyCode >= 35 && e.keyCode <= 40)) {
+                              // Allow: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+                              (e.keyCode === 65 && e.ctrlKey === true) ||
+                              (e.keyCode === 67 && e.ctrlKey === true) ||
+                              (e.keyCode === 86 && e.ctrlKey === true) ||
+                              (e.keyCode === 88 && e.ctrlKey === true) ||
+                              // Allow: home, end, left, right, down, up
+                              (e.keyCode >= 35 && e.keyCode <= 40)) {
                               return;
                             }
                             // Ensure that it is a number and stop the keypress
@@ -649,9 +648,8 @@ export default function EarningsAndWithdrawals() {
                       <FormLabel>Account Name</FormLabel>
                       <FormControl>
                         <Input
-                          placeholder={`e.g., ${
-                            dashboardData?.agent.fullName || "Your name"
-                          }`}
+                          placeholder={`e.g., ${dashboardData?.agent.fullName || "Your name"
+                            }`}
                           className="text-sm h-9 sm:h-10"
                           {...field}
                         />

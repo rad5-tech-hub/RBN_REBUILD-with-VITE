@@ -1,4 +1,4 @@
-  ;
+;
 
 import { useState } from "react";
 import Logo from "../../assets/images/rad5hub.png";
@@ -191,7 +191,7 @@ export default function SignupForm() {
         throw new Error("No base api defined in .env");
       }
 
-      const response = await fetch(`${apiBaseUrl}/agent/register`, {
+      const response = await fetch(`${apiBaseUrl}/api/v1/agent/register`, {
         method: "POST",
         body: data,
       });
@@ -200,8 +200,7 @@ export default function SignupForm() {
         const text = await response.text();
         console.error("Non-JSON response:", text);
         throw new Error(
-          `Invalid response format: Expected JSON, received ${
-            contentType || "unknown"
+          `Invalid response format: Expected JSON, received ${contentType || "unknown"
           }`
         );
       }
@@ -212,8 +211,8 @@ export default function SignupForm() {
         const errorResult = result as ErrorResponse;
         throw new Error(
           errorResult.message ||
-            errorResult.error ||
-            `HTTP ${response.status}: ${response.statusText}`
+          errorResult.error ||
+          `HTTP ${response.status}: ${response.statusText}`
         );
       }
 
@@ -221,7 +220,7 @@ export default function SignupForm() {
 
       const referralLink = successResult.data.referralLink!;
       localStorage.setItem("rbn_referral_link", referralLink);
-      
+
 
       setRegisteredEmail(formData.email);
       setFormData({

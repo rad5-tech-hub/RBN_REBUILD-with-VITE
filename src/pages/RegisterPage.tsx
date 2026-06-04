@@ -253,22 +253,14 @@ export default function RegisterPage() {
               Congratulations!
             </h2>
             <p className="text-gray-700 dark:text-gray-300">
-              You’ve successfully registered for our Digital Skills Training
-              Program. Stay tuned for updates via email or phone
-            </p>
-            <p className="text-gray-600 dark:text-gray-400">
-              Explore more at{" "}
-              <a
-                href={`${import.meta.env.VITE_ACADEMY_WEBSITE}/programs`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-600 dark:text-blue-400 hover:underline"
-              >
-                https://academy.rad5.com.ng/programs
-              </a>
+              You've taken the first step to building real tech skills.
+              Someone from RAD5 will be in touch with you shortly.
             </p>
             <Button
-              onClick={() => setFormSubmittedSuccessfully(false)}
+              onClick={() => {
+                const academyUrl = import.meta.env.VITE_ACADEMY_WEBSITE;
+                window.location.href = academyUrl?.trim() || "https://academy.rad5.com.ng";
+              }}
               className="bg-green-600 text-white hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600 mt-4 px-6 py-3 rounded-lg transition-all duration-300 transform hover:scale-105"
             >
               Ok
@@ -357,11 +349,10 @@ export default function RegisterPage() {
                   <img src={Logo} alt="RAD5 Logo" width={100} height={100} />
                 </Link>
                 <h1 className="text-4xl font-bold">
-                  Join RAD5 Brokers Network
+                  Join RAD5 TechX Bootcamp Today
                 </h1>
                 <p className="text-sm max-w-xs">
-                  Register to connect with elite tech programs and earn
-                  commissions by referring students.
+                  This is your first step in building the skills of the future.
                 </p>
               </div>
             </div>

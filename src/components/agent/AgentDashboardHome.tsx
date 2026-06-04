@@ -32,7 +32,7 @@ interface ProfileImageResponse {
 }
 
 const AgentDashboardHome = () => {
-  const {openSidebar} = useSidebar()
+  const { openSidebar } = useSidebar()
   const [dashboardData, setDashboardData] = useState<DashboardResponse | null>(
     null
   );
@@ -40,7 +40,7 @@ const AgentDashboardHome = () => {
   const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
-  
+
   const mounted = useRef(true);
 
   //Function to share links
@@ -49,7 +49,7 @@ const AgentDashboardHome = () => {
     const referralLink = dashboardData?.agent.sharableLink
       ? `${baseUrl}/register/agent/${dashboardData.agent.sharableLink}`
       : "";
-    const shareText = `Hey! Join my RAD5 Brokers Network referral program and start earning with elite tech training. Use my link: ${referralLink}`;
+    const shareText = `Ready to build in-demand tech skills? Join Rad5’s TechX programs and start your journey today. Tap to sign up!: ${referralLink}`;
 
     if (!referralLink) {
       toast.error("Referral link not available.");
@@ -160,8 +160,8 @@ const AgentDashboardHome = () => {
         const errorResult = (await response.json()) as ErrorResponse;
         throw new Error(
           errorResult.message ||
-            errorResult.error ||
-            `HTTP ${response.status}: ${response.statusText}`
+          errorResult.error ||
+          `HTTP ${response.status}: ${response.statusText}`
         );
       }
 
@@ -169,12 +169,12 @@ const AgentDashboardHome = () => {
       setDashboardData((prev) =>
         prev
           ? {
-              ...prev,
-              agent: {
-                ...prev.agent,
-                profileImage: successResult.data.profileImage,
-              },
-            }
+            ...prev,
+            agent: {
+              ...prev.agent,
+              profileImage: successResult.data.profileImage,
+            },
+          }
           : prev
       );
       setProfileImageFile(null);
@@ -194,7 +194,7 @@ const AgentDashboardHome = () => {
   useEffect(() => {
     const fetchDashboardData = async () => {
       setLoading(true);
-      
+
       const controller = new AbortController();
 
       try {
@@ -224,8 +224,8 @@ const AgentDashboardHome = () => {
           const errorResult = (await response.json()) as ErrorResponse;
           throw new Error(
             errorResult.message ||
-              errorResult.error ||
-              `HTTP ${response.status}: ${response.statusText}`
+            errorResult.error ||
+            `HTTP ${response.status}: ${response.statusText}`
           );
         }
 
@@ -279,7 +279,7 @@ const AgentDashboardHome = () => {
   const profileImage =
     dashboardData?.agent.profileImage ?? "/default-avatar.png";
   const sharableLink = dashboardData?.agent.sharableLink ?? "";
-  
+
 
   return (
     <>
