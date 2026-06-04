@@ -101,8 +101,7 @@ export default function AgentDashBoardReferrals() {
           const text = await response.text();
           console.error("Non-JSON response:", text);
           throw new Error(
-            `Invalid response format: Expected JSON, received ${
-              contentType || "unknown"
+            `Invalid response format: Expected JSON, received ${contentType || "unknown"
             }`
           );
         }
@@ -112,8 +111,8 @@ export default function AgentDashBoardReferrals() {
           const errorResult = result as ErrorResponse;
           throw new Error(
             errorResult.message ||
-              errorResult.error ||
-              `HTTP ${response.status}: ${response.statusText}`
+            errorResult.error ||
+            `HTTP ${response.status}: ${response.statusText}`
           );
         }
 
@@ -163,7 +162,7 @@ export default function AgentDashBoardReferrals() {
       : "";
     const tagline =
       localStorage.getItem("userReferralTagline") ||
-      "Join RBN and earn rewards!";
+      "Ready to build in-demand tech skills? Join Rad5’s TechX programs and start your journey today. Tap to sign up!";
     const message = `${tagline} ${referralLink}`;
     let url = "";
 
