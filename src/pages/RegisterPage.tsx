@@ -1,6 +1,7 @@
 import { useState, type FormEvent, useCallback, useEffect } from "react";
 import { type Course } from "../components/LandingPageClient";
 import Logo from "..//assets/images/rad5hub.png";
+import academyBg from "../assets/images/academy.jpg";
 import { useParams } from "react-router-dom";
 import { toast, Toaster } from "react-hot-toast";
 import {
@@ -166,8 +167,7 @@ export default function RegisterPage() {
         const text = await response.text();
         console.error("Non-JSON response:", text);
         throw new Error(
-          `Invalid response format: Expected JSON, received ${
-            contentType || "unknown"
+          `Invalid response format: Expected JSON, received ${contentType || "unknown"
           }`
         );
       }
@@ -178,8 +178,8 @@ export default function RegisterPage() {
         const errorResult = result as ErrorResponse;
         throw new Error(
           errorResult.message ||
-            errorResult.error ||
-            `HTTP ${response.status}: ${response.statusText}`
+          errorResult.error ||
+          `HTTP ${response.status}: ${response.statusText}`
         );
       }
 
@@ -342,7 +342,7 @@ export default function RegisterPage() {
           onKeyDown={handleFormKeyDown}
         >
           <div className="grid lg:grid-cols-2 grid-cols-1 min-h-[600px] rounded-lg overflow-hidden shadow-xl">
-            <div className="hidden lg:block bg-[url(/src/assets/images/signupbg03.jpg)] bg-cover bg-center bg-no-repeat relative">
+            <div className="hidden lg:block bg-cover bg-center bg-no-repeat relative" style={{ backgroundImage: `url(${academyBg})` }}>
               <div className="absolute top-0 w-full h-full bg-gradient-to-r from-blue-900/45 to-blue-800/60"></div>
               <div className="absolute z-10 text-white p-6 space-y-4">
                 <Link to="/" aria-label="RAD5 Brokers Network Home">

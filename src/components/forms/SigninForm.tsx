@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Logo from "../../assets/images/rad5hub.png"
+import academyBg from "../../assets/images/academy.jpg"
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
@@ -39,7 +40,7 @@ export default function SigninForm() {
 
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_BASE_URL}/api/v1/agent/login`,
+        `${import.meta.env.VITE_BASE_URL}/agent/login`,
         {
           method: "POST",
           headers: {
@@ -99,7 +100,7 @@ export default function SigninForm() {
         onSubmit={handleSubmit}
       >
         <div className="grid lg:grid-cols-2 grid-cols-1 min-h-[500px] rounded-lg overflow-hidden shadow-xl">
-          <div className="hidden lg:block bg-[url(/src/assets/images/signupbg03.jpg)] bg-cover bg-center bg-no-repeat relative">
+          <div className="hidden lg:block bg-cover bg-center bg-no-repeat relative" style={{ backgroundImage: `url(${academyBg})` }}>
             <div className="absolute top-0 w-full h-full bg-gradient-to-r from-blue-800/45 to-blue-900/60"></div>
             <div className="absolute z-10 text-white p-6 space-y-0">
               <Link to="/" aria-label="RAD5 Brokers Network Home">
