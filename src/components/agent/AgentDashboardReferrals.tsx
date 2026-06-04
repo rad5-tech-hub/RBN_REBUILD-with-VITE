@@ -195,14 +195,14 @@ export default function AgentDashBoardReferrals() {
         break;
       case "email":
         url = `mailto:?subject=${encodeURIComponent(
-          "Join RBN"
+          "Ready to build in-demand tech skills? Join Rad5’s TechX programs and start your journey today. Tap to sign up!"
         )}&body=${encodeURIComponent(message)}`;
         break;
       case "native":
         if (navigator.share) {
           try {
             await navigator.share({
-              title: "Join RBN",
+              title: "Ready to build in-demand tech skills? Join Rad5’s TechX programs and start your journey today. Tap to sign up!",
               text: tagline,
               url: referralLink,
             });
