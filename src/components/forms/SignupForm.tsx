@@ -192,7 +192,7 @@ export default function SignupForm() {
         throw new Error("No base api defined in .env");
       }
 
-      const response = await fetch(`${apiBaseUrl}/api/v1/agent/register`, {
+      const response = await fetch(`${apiBaseUrl}/agent/register`, {
         method: "POST",
         body: data,
       });
