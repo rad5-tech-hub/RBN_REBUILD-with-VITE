@@ -205,6 +205,7 @@ export default function AdminDashboardAgents() {
       agent.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
       (agent.phoneNumber && agent.phoneNumber.includes(searchQuery))
   );
+  const displayAgents = filteredAgents.slice(0, 10);
 
   const fetchAgentUsers = async (agentId: string) => {
     setIsFetchingUsers(true);
@@ -390,8 +391,11 @@ export default function AdminDashboardAgents() {
         </div>
 
         {filteredAgents.length > 0 ? (
-          <div className="space-y-3">
-            {filteredAgents.map((agent) => (
+          <div className="space-y-3 max-h-[calc(100vh-22rem)] overflow-y-auto pr-1">
+            <p className="text-xs text-gray-400 dark:text-gray-500 font-medium">
+              Showing {displayAgents.length} of {filteredAgents.length} agent{filteredAgents.length !== 1 ? "s" : ""}
+            </p>
+            {displayAgents.map((agent) => (
               <div
                 key={agent.id}
                 className={`group relative rounded-2xl bg-white dark:bg-gray-900/40 border border-blue-200/60 dark:border-blue-800/40 p-4 sm:p-5 transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 ${isNavigating ? "opacity-60" : ""}`}

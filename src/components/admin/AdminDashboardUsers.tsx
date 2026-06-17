@@ -159,6 +159,7 @@ export default function AdminDashboardUsers() {
       user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
       (user.phoneNumber && user.phoneNumber.includes(searchQuery))
   );
+  const displayUsers = filteredUsers.slice(0, 10);
 
   if (isLoading) {
     return (
@@ -225,8 +226,11 @@ export default function AdminDashboardUsers() {
         </div>
 
         {filteredUsers.length > 0 ? (
-          <div className="space-y-3">
-            {filteredUsers.map((user) => {
+          <div className="space-y-3 max-h-[calc(100vh-22rem)] overflow-y-auto pr-1">
+            <p className="text-xs text-gray-400 dark:text-gray-500 font-medium">
+              Showing {displayUsers.length} of {filteredUsers.length} user{filteredUsers.length !== 1 ? "s" : ""}
+            </p>
+            {displayUsers.map((user) => {
               const status = resolvePaymentStatus(user.paymentStatus);
               return (
                 <div
