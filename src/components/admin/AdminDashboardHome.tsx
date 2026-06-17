@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { RiMenu2Line } from "react-icons/ri";
 import { useSidebar } from "./AdminSidebarContext";
-import { Users, CreditCard, TrendingUp, UserPlus, Clock, Activity, ChevronRight } from "lucide-react";
+import { Users, CreditCard, TrendingUp, UserPlus, Clock, Activity, ChevronRight, Shield, UserCheck, User } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -74,6 +74,14 @@ function fullDate(dateStr: string): string {
 
 function parseDetails(details: string): Record<string, string> {
   try { return JSON.parse(details); } catch { return { info: details }; }
+}
+
+function entityIcon(entityType: string) {
+  const type = entityType.toLowerCase();
+  if (type.includes("agent")) return UserCheck;
+  if (type.includes("admin")) return Shield;
+  if (type.includes("user")) return User;
+  return Activity;
 }
 
 function greeting(): string {
@@ -226,6 +234,7 @@ const AdminDashboardHome = () => {
   }
 
   const displayLog = auditLog.slice(0, 5);
+  const allDetailKeys = [...new Set(displayLog.flatMap(e => Object.keys(parseDetails(e.details))))];
   const periodLabel = todayStr();
 
   return (
@@ -309,9 +318,18 @@ const AdminDashboardHome = () => {
           <Table>
             <TableHeader>
               <TableRow className="hover:bg-transparent">
-                <TableHead className="text-[11px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 pl-6 w-[100px]">Time</TableHead>
-                <TableHead className="text-[11px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500">Action</TableHead>
-                <TableHead className="text-[11px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500">Details</TableHead>
+                <TableHead className="text-[11px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 pl-6 w-[120px]">Time</TableHead>
+                <TableHead className="text-[11px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 border-l border-gray-100 dark:border-gray-800/60 pl-4">Action</TableHead>
+                <TableHead className="text-[11px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 border-l border-gray-100 dark:border-gray-800/60 pl-4">Entity</TableHead>
+                <TableHead className="text-[11px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 border-l border-gray-100 dark:border-gray-800/60 pl-4 w-[120px]">Entity</TableHead>
+                {allDetailKeys.length > 0 && allDetailKeys.slice(0, 3).map(key => (
+                  <TableHead key={key} className="text-[11px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 border-l border-gray-100 dark:border-gray-800/60 pl-4 min-w-[120px]">
+                    {key.replace(/([A-Z])/g, " $1").trim()}
+                  </TableHead>
+                ))}
+                {allDetailKeys.length > 3 && (
+                  <TableHead className="text-[11px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 border-l border-gray-100 dark:border-gray-800/60 pl-4 w-[80px]">More</TableHead>
+                )}
                 <TableHead className="w-[40px] pr-6" />
               </TableRow>
             </TableHeader>
@@ -319,7 +337,8 @@ const AdminDashboardHome = () => {
               {displayLog.map((entry) => {
                 const style = resolveAction(entry.action);
                 const details = parseDetails(entry.details);
-                const summary = Object.values(details).join(", ");
+                const detailEntries = Object.entries(details);
+                const EIcon = entityIcon(entry.entityType);
                 const time = relativeTime(entry.createdAt);
                 const full = fullDate(entry.createdAt);
 
@@ -329,25 +348,55 @@ const AdminDashboardHome = () => {
                     onClick={() => setSelectedEntry(entry)}
                     className="cursor-pointer group transition-all duration-150 hover:bg-gray-50 dark:hover:bg-gray-800/40"
                   >
-                    <TableCell className="pl-6 py-3.5">
-                      <div className="flex items-center gap-2.5">
-                        <div className={`h-2 w-2 rounded-full ring-2 ring-offset-2 ring-offset-white dark:ring-offset-gray-900 ${style.ring} shrink-0`} />
-                        <span className="text-xs font-medium text-gray-400 dark:text-gray-500 tabular-nums" title={full}>
-                          {time}
+                    <TableCell className="pl-6 py-4 align-top">
+                      <div className="flex items-start gap-3">
+                        <div className={`mt-1 h-2.5 w-2.5 rounded-full ring-2 ring-offset-2 ring-offset-white dark:ring-offset-gray-900 ${style.ring} shrink-0`} />
+                        <div className="flex flex-col">
+                          <span className="text-sm font-semibold text-gray-900 dark:text-gray-50 tabular-nums leading-none">
+                            {time}
+                          </span>
+                          <span className="text-[11px] text-gray-400 dark:text-gray-500 mt-1 font-medium" title={full}>
+                            {full}
+                          </span>
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell className="py-4 align-top border-l border-gray-100 dark:border-gray-800/60 pl-4">
+                      <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider border shadow-sm bg-opacity-50 dark:bg-opacity-20">
+                        <span className="h-1.5 w-1.5 rounded-full bg-current opacity-60" />
+                        <span className={style.color}>{style.label}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell className="py-4 align-top border-l border-gray-100 dark:border-gray-800/60 pl-4">
+                      <div className="flex items-center gap-2">
+                        <div className="p-1 rounded-md bg-gray-50 dark:bg-gray-800/50 text-gray-400 dark:text-gray-500">
+                          <EIcon className="h-3.5 w-3.5" />
+                        </div>
+                        <span className="text-sm font-medium text-gray-700 dark:text-gray-200">
+                          {entry.entityType}
                         </span>
                       </div>
                     </TableCell>
-                    <TableCell className="py-3.5">
-                      <span className={`text-sm font-semibold ${style.color}`}>{style.label}</span>
-                    </TableCell>
-                    <TableCell className="py-3.5 max-w-[320px]">
-                      {summary ? (
-                        <span className="text-sm text-gray-500 dark:text-gray-400 truncate block">{summary}</span>
-                      ) : (
-                        <span className="text-sm text-gray-300 dark:text-gray-600 italic">—</span>
-                      )}
-                    </TableCell>
-                    <TableCell className="pr-6 py-3.5">
+                    {allDetailKeys.slice(0, 3).map(key => {
+                      const val = details[key];
+                      return (
+                        <TableCell key={key} className="py-4 align-top border-l border-gray-100 dark:border-gray-800/60 pl-4">
+                          {val ? (
+                            <span className="text-sm font-medium text-gray-700 dark:text-gray-200 break-words">{val}</span>
+                          ) : (
+                            <span className="text-sm text-gray-300 dark:text-gray-600 italic">—</span>
+                          )}
+                        </TableCell>
+                      );
+                    })}
+                    {allDetailKeys.length > 3 && (
+                      <TableCell className="py-4 align-top border-l border-gray-100 dark:border-gray-800/60 pl-4">
+                        <span className="text-xs text-gray-400 dark:text-gray-500 font-medium">
+                          +{detailEntries.length - 3}
+                        </span>
+                      </TableCell>
+                    )}
+                    <TableCell className="pr-6 py-4 align-top">
                       <ChevronRight className="h-4 w-4 text-gray-300 dark:text-gray-600 opacity-0 group-hover:opacity-100 transition-all duration-200 group-hover:translate-x-0.5" />
                     </TableCell>
                   </TableRow>
