@@ -28,6 +28,7 @@ export default function AdminSidebar() {
   const { theme, setTheme } = useTheme();
   const navigate = useNavigate()
   const [mounted, setMounted] = useState(false);
+  const {isOpen,toggleSidebar } = useSidebar();
 
   useEffect(() => {
     setMounted(true);
@@ -55,6 +56,11 @@ export default function AdminSidebar() {
       icon: <UserPlus className="h-5 w-5" />,
     },
     {
+      name: "Register Agent",
+      href: "/admin/register-agent",
+      icon: <UserPlus className="h-5 w-5" />,
+    },
+    {
       name: "Withdrawals",
       href: "/admin/withdrawals",
       icon: <CreditCard className="h-5 w-5" />,
@@ -79,7 +85,6 @@ export default function AdminSidebar() {
 
   if (!mounted) return null; // Prevent SSR render of theme-dependent components
 
-  const {isOpen,toggleSidebar } = useSidebar();
   return (
     <>
       <aside

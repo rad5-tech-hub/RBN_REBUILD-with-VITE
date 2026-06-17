@@ -19,6 +19,7 @@ import AdminDashboardCreateAdmin from "./components/admin/AdminDashboardCreateAd
 import AdminDashboardWithdrawals from "./components/admin/AdminDashboardWithdrawals";
 import AdminDashboardCreateCourse from "./components/admin/AdminDashboardCreateCourse";
 import AdminDashboardManageCourses from "./components/admin/AdminDashboardManageCourses";
+import AdminDashboardRegisterAgent from "./components/admin/AdminDashboardRegisterAgent";
 import { AdminSidebarProvider } from "./components/admin/AdminSidebarContext";
 import { AgentSidebarProvider } from "./components/agent/AgentSidebarContext";
 import RegisterPage from "./pages/RegisterPage";
@@ -110,17 +111,26 @@ function App() {
             />
 
             
-            <Route
-              path="create-admin"
-              element={
-                <>
-                  <AdminDashboardCreateAdmin />
-                </>
-              }
-            />
+             <Route
+               path="register-agent"
+               element={
+                 <>
+                   <AdminDashboardRegisterAgent />
+                 </>
+               }
+             />
 
              <Route
-              path="withdrawals"
+               path="create-admin"
+               element={
+                 <>
+                   <AdminDashboardCreateAdmin />
+                 </>
+               }
+             />
+
+              <Route
+               path="withdrawals"
               element={
                 <>
                   <AdminDashboardWithdrawals />
