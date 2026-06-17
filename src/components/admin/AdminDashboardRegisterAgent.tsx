@@ -4,7 +4,7 @@ import { Input } from "../ui/input";
 import { RiMenu2Line } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import { useSidebar } from "./AdminSidebarContext";
-import { UserPlus, Copy, Check, ExternalLink, ShieldCheck } from "lucide-react";
+import { Copy, Check, ExternalLink, ShieldCheck } from "lucide-react";
 import { toast, Toaster } from "react-hot-toast";
 
 interface AgentData {

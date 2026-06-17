@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { toast, Toaster } from "react-hot-toast";
-import { Eye, EyeOff, ShieldCheck } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import { RiMenu2Line } from "react-icons/ri";
 import { useSidebar } from "../admin/AdminSidebarContext";
 

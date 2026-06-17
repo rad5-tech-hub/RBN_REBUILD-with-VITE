@@ -3,18 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { RiMenu2Line } from "react-icons/ri";
 import { useSidebar } from "./AdminSidebarContext";
 import { Users, CreditCard, TrendingUp, UserPlus, Clock, Activity } from "lucide-react";
-import { TbCurrencyNaira } from "react-icons/tb";
 
 interface DashboardStats {
   totalAgentEarnings: number;
   totalAgents: number;
   totalWithdrawals: number;
   totalUsers: number;
-}
-
-interface DashboardResponse {
-  stats: DashboardStats;
-  message: string;
 }
 
 interface AuditEntry {

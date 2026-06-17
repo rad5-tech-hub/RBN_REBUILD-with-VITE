@@ -226,7 +226,7 @@ export default function AdminDashboardUsers() {
 
         {filteredUsers.length > 0 ? (
           <div className="space-y-3">
-            {filteredUsers.map((user, idx) => {
+            {filteredUsers.map((user) => {
               const status = resolvePaymentStatus(user.paymentStatus);
               return (
                 <div
