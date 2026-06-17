@@ -73,47 +73,36 @@ function fullDate(dateStr: string): string {
 }
 
 function parseDetails(details: string): Record<string, string> {
-  try { return JSON.parse(details); } catch { return { info: details }; }
+  try { return JSON.parse(details); } catch { /* not JSON */ }
+  const result: Record<string, string> = {};
+  const parts = details.split(/,\s*/);
+  for (const part of parts) {
+    const idx = part.indexOf(": ");
+    if (idx !== -1) {
+      result[part.slice(0, idx).trim()] = part.slice(idx + 2).trim();
+    }
+  }
+  return Object.keys(result).length ? result : { info: details };
 }
 
-type DetailField = "name" | "email" | "phone";
-
-interface FieldSchema {
-  name: { source: string } | null;
-  email: { source: string } | null;
-  phone: { source: string } | null;
+function pickField(details: Record<string, string>, ...candidates: string[]): string | undefined {
+  for (const c of candidates) {
+    const match = Object.entries(details).find(([k]) => k.toLowerCase() === c.toLowerCase());
+    if (match) return match[1];
+  }
+  return undefined;
 }
 
-const fieldSchema: Record<string, FieldSchema> = {
-  "AGENT REGISTERED": {
-    name: { source: "Name" },
-    email: { source: "AgentEmail" },
-    phone: { source: "PhoneNumber" },
-  },
-  "ADMIN CREATED": {
-    name: { source: "newAdmin" },
-    email: null,
-    phone: null,
-  },
-  "USER REGISTERED": {
-    name: { source: "Name" },
-    email: { source: "Email" },
-    phone: { source: "PhoneNumber" },
-  },
-  "AGENT FUNDED": {
-    name: { source: "Name" },
-    email: null,
-    phone: null,
-  },
-  "WITHDRAWAL": {
-    name: null,
-    email: null,
-    phone: null,
-  },
-};
-
-function getFieldSchema(action: string): FieldSchema {
-  return fieldSchema[action.toUpperCase()] ?? { name: null, email: null, phone: null };
+function resolveFields(entityType: string, details: Record<string, string>) {
+  const isAdmin = entityType.toLowerCase() === "admin";
+  if (isAdmin) {
+    return { name: pickField(details, "newadmin", "name", "fullname"), email: undefined, phone: undefined };
+  }
+  return {
+    name: pickField(details, "name", "fullname"),
+    email: pickField(details, "agentemail", "email"),
+    phone: pickField(details, "phonenumber", "phone", "number"),
+  };
 }
 
 function entityIcon(entityType: string) {
@@ -274,11 +263,7 @@ const AdminDashboardHome = () => {
   }
 
   const displayLog = auditLog.slice(0, 5);
-  const fieldColumns: { key: DetailField; label: string; monospace?: boolean }[] = [
-    { key: "name", label: "Name" },
-    { key: "email", label: "Email", monospace: true },
-    { key: "phone", label: "Phone", monospace: true },
-  ];
+
   const periodLabel = todayStr();
 
   return (
@@ -363,13 +348,11 @@ const AdminDashboardHome = () => {
             <TableHeader>
               <TableRow className="hover:bg-transparent">
                 <TableHead className="text-[11px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 pl-6 w-[120px]">Time</TableHead>
-                <TableHead className="text-[11px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 border-l border-gray-100 dark:border-gray-800/60 pl-4">Action</TableHead>
-                <TableHead className="text-[11px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 border-l border-gray-100 dark:border-gray-800/60 pl-4 w-[100px]">Entity</TableHead>
-                {fieldColumns.map(col => (
-                  <TableHead key={col.key} className="text-[11px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 border-l border-gray-100 dark:border-gray-800/60 pl-4 min-w-[140px]">
-                    {col.label}
-                  </TableHead>
-                ))}
+                <TableHead className="text-[11px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 pl-4 w-[100px]">Entity</TableHead>
+                <TableHead className="text-[11px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 pl-4">Action</TableHead>
+                <TableHead className="text-[11px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 pl-4 min-w-[140px]">Name</TableHead>
+                <TableHead className="text-[11px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 pl-4 min-w-[160px]">Email</TableHead>
+                <TableHead className="text-[11px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 pl-4 min-w-[140px]">Phone Number</TableHead>
                 <TableHead className="w-[40px] pr-6" />
               </TableRow>
             </TableHeader>
@@ -377,7 +360,6 @@ const AdminDashboardHome = () => {
               {displayLog.map((entry) => {
                 const style = resolveAction(entry.action);
                 const details = parseDetails(entry.details);
-                const schema = getFieldSchema(entry.action);
                 const EIcon = entityIcon(entry.entityType);
                 const time = relativeTime(entry.createdAt);
                 const full = fullDate(entry.createdAt);
@@ -401,8 +383,18 @@ const AdminDashboardHome = () => {
                         </div>
                       </div>
                     </TableCell>
-                    <TableCell className="py-4 align-top border-l border-gray-100 dark:border-gray-800/60 pl-4">
-                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider border shadow-sm ${
+                    <TableCell className="py-4 align-top pl-4">
+                      <div className="flex items-center gap-2">
+                        <div className="p-1 rounded-md bg-gray-50 dark:bg-gray-800/50 text-gray-400 dark:text-gray-500">
+                          <EIcon className="h-3.5 w-3.5" />
+                        </div>
+                        <span className="text-sm font-medium text-gray-700 dark:text-gray-200">
+                          {entry.entityType}
+                        </span>
+                      </div>
+                    </TableCell>
+                    <TableCell className="py-4 align-top pl-4">
+                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-bold uppercase tracking-wider border shadow-sm ${
                         style.color.includes("violet") ? "bg-violet-50 dark:bg-violet-900/20 border-violet-200 dark:border-violet-800/40 text-violet-700 dark:text-violet-300" :
                         style.color.includes("indigo") ? "bg-indigo-50 dark:bg-indigo-900/20 border-indigo-200 dark:border-indigo-800/40 text-indigo-700 dark:text-indigo-300" :
                         style.color.includes("teal") ? "bg-teal-50 dark:bg-teal-900/20 border-teal-200 dark:border-teal-800/40 text-teal-700 dark:text-teal-300" :
@@ -421,34 +413,22 @@ const AdminDashboardHome = () => {
                         {style.label}
                       </span>
                     </TableCell>
-                    <TableCell className="py-4 align-top border-l border-gray-100 dark:border-gray-800/60 pl-4">
-                      <div className="flex items-center gap-2">
-                        <div className="p-1 rounded-md bg-gray-50 dark:bg-gray-800/50 text-gray-400 dark:text-gray-500">
-                          <EIcon className="h-3.5 w-3.5" />
-                        </div>
-                        <span className="text-sm font-medium text-gray-700 dark:text-gray-200">
-                          {entry.entityType}
-                        </span>
-                      </div>
-                    </TableCell>
-                    {fieldColumns.map(col => {
-                      const fieldDef = schema[col.key];
-                      const val = fieldDef ? details[fieldDef.source] : undefined;
+                    {(["name", "email", "phone"] as const).map(field => {
+                      const fields = resolveFields(entry.entityType, details);
+                      const val = fields[field];
                       return (
-                        <TableCell key={col.key} className="py-4 align-top border-l border-gray-100 dark:border-gray-800/60 pl-4">
+                        <TableCell key={field} className="py-4 align-top pl-4">
                           {val ? (
                             <span
-                              className={`text-sm font-medium text-gray-700 dark:text-gray-200 ${
-                                col.monospace ? "font-mono tabular-nums" : ""
-                              } truncate block max-w-[180px]`}
+                              className={`text-sm font-medium text-gray-700 dark:text-gray-200 truncate block max-w-[180px] ${
+                                field === "email" || field === "phone" ? "font-mono tabular-nums" : ""
+                              }`}
                               title={val}
                             >
                               {val}
                             </span>
                           ) : (
-                            <span className="text-sm text-gray-300 dark:text-gray-600 flex items-center justify-center">
-                              –
-                            </span>
+                            <span className="text-sm text-gray-300 dark:text-gray-600">–</span>
                           )}
                         </TableCell>
                       );
