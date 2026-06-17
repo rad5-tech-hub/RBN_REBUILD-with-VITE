@@ -92,6 +92,8 @@ export default  {
     "dark:border-blue-800",
     "dark:border-blue-700",
     "dark:border-blue-600",
+    "from-blue-500",
+    "to-blue-600",
     "from-blue-700",
     "to-blue-900",
     "via-blue-800",

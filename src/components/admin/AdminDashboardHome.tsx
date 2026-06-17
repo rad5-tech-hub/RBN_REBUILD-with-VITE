@@ -2,7 +2,15 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { RiMenu2Line } from "react-icons/ri";
 import { useSidebar } from "./AdminSidebarContext";
-import { Users, CreditCard, TrendingUp, UserPlus, Clock, Activity } from "lucide-react";
+import { Users, CreditCard, TrendingUp, UserPlus, Clock, Activity, ChevronRight } from "lucide-react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../ui/table";
 
 interface DashboardStats {
   totalAgentEarnings: number;
@@ -277,14 +285,14 @@ const AdminDashboardHome = () => {
       <div className="rounded-2xl border border-gray-200/70 dark:border-gray-700/50 bg-white dark:bg-gray-900/40 shadow-sm overflow-hidden">
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-800">
           <div className="flex items-center gap-3">
-            <div className="p-1.5 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400">
+            <div className="p-1.5 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-sm">
               <Clock className="h-4 w-4" />
             </div>
             <h2 className="text-sm font-semibold text-gray-900 dark:text-gray-50">Recent Activity</h2>
           </div>
           {auditLog.length > 0 && (
-            <span className="text-[11px] font-medium text-gray-400 dark:text-gray-500 tabular-nums">
-              {displayLog.length} of {auditLog.length}
+            <span className="text-[11px] font-medium text-gray-400 dark:text-gray-500 tabular-nums bg-gray-50 dark:bg-gray-800/50 px-2.5 py-1 rounded-full">
+              Latest {displayLog.length}
             </span>
           )}
         </div>
@@ -298,38 +306,55 @@ const AdminDashboardHome = () => {
             <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">Activity records will appear here as actions are performed</p>
           </div>
         ) : (
-          <div className="divide-y divide-gray-100 dark:divide-gray-800/80">
-            {displayLog.map((entry) => {
-              const style = resolveAction(entry.action);
-              const details = parseDetails(entry.details);
-              const summary = Object.values(details).join(", ");
-              const time = relativeTime(entry.createdAt);
-              const full = fullDate(entry.createdAt);
+          <Table>
+            <TableHeader>
+              <TableRow className="hover:bg-transparent">
+                <TableHead className="text-[11px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 pl-6 w-[100px]">Time</TableHead>
+                <TableHead className="text-[11px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500">Action</TableHead>
+                <TableHead className="text-[11px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500">Details</TableHead>
+                <TableHead className="w-[40px] pr-6" />
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {displayLog.map((entry) => {
+                const style = resolveAction(entry.action);
+                const details = parseDetails(entry.details);
+                const summary = Object.values(details).join(", ");
+                const time = relativeTime(entry.createdAt);
+                const full = fullDate(entry.createdAt);
 
-              return (
-                <button
-                  key={entry.id}
-                  onClick={() => setSelectedEntry(entry)}
-                  className="w-full text-left px-6 py-3.5 hover:bg-gray-50 dark:hover:bg-gray-800/40 transition-colors group"
-                >
-                  <div className="flex items-center gap-4">
-                    <div className={`h-2 w-2 rounded-full ring-2 ring-offset-2 ring-offset-white dark:ring-offset-gray-900 ${style.ring} shrink-0`} />
-                    <div className="flex-1 min-w-0 flex items-baseline justify-between gap-4">
-                      <div className="min-w-0">
-                        <span className={`text-sm font-semibold ${style.color}`}>{style.label}</span>
-                        {summary && (
-                          <span className="text-sm text-gray-500 dark:text-gray-400 ml-2 truncate">{summary}</span>
-                        )}
+                return (
+                  <TableRow
+                    key={entry.id}
+                    onClick={() => setSelectedEntry(entry)}
+                    className="cursor-pointer group transition-all duration-150 hover:bg-gray-50 dark:hover:bg-gray-800/40"
+                  >
+                    <TableCell className="pl-6 py-3.5">
+                      <div className="flex items-center gap-2.5">
+                        <div className={`h-2 w-2 rounded-full ring-2 ring-offset-2 ring-offset-white dark:ring-offset-gray-900 ${style.ring} shrink-0`} />
+                        <span className="text-xs font-medium text-gray-400 dark:text-gray-500 tabular-nums" title={full}>
+                          {time}
+                        </span>
                       </div>
-                      <span className="text-xs text-gray-400 dark:text-gray-500 whitespace-nowrap shrink-0 font-medium" title={full}>
-                        {time}
-                      </span>
-                    </div>
-                  </div>
-                </button>
-              );
-            })}
-          </div>
+                    </TableCell>
+                    <TableCell className="py-3.5">
+                      <span className={`text-sm font-semibold ${style.color}`}>{style.label}</span>
+                    </TableCell>
+                    <TableCell className="py-3.5 max-w-[320px]">
+                      {summary ? (
+                        <span className="text-sm text-gray-500 dark:text-gray-400 truncate block">{summary}</span>
+                      ) : (
+                        <span className="text-sm text-gray-300 dark:text-gray-600 italic">—</span>
+                      )}
+                    </TableCell>
+                    <TableCell className="pr-6 py-3.5">
+                      <ChevronRight className="h-4 w-4 text-gray-300 dark:text-gray-600 opacity-0 group-hover:opacity-100 transition-all duration-200 group-hover:translate-x-0.5" />
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
         )}
       </div>
 
