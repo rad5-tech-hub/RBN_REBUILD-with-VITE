@@ -126,6 +126,8 @@ export default  {
     "border-blue-200/60",
     "border-gray-200/60",
     "border-green-200/60",
+    "group-hover:border-blue-400/30",
+    "dark:group-hover:border-blue-400/20",
   ],
   variants: {
     extend: {},
