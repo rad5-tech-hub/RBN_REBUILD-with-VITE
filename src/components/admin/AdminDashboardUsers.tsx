@@ -25,7 +25,6 @@ interface User {
 interface AllUsersResponse {
   message: string;
   users: User[];
-  nextCursor?: string;
 }
 
 const avatarGradients = [
@@ -82,21 +81,16 @@ export default function AdminDashboardUsers() {
   const [users, setUsers] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [nextCursor, setNextCursor] = useState<string | null>(null);
-  const [prevCursors, setPrevCursors] = useState<string[]>([]);
-  const [currentCursor, setCurrentCursor] = useState<string | undefined>(undefined);
-  const [hasMore, setHasMore] = useState(true);
-  const [isNavigating, setIsNavigating] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 30;
 
-  const fetchUsers = async (cursor?: string) => {
+  const fetchUsers = async () => {
     try {
       const token = localStorage.getItem("rbn_admin_token");
       if (!token) throw new Error("No authentication token found. Please sign in.");
 
       const apiBaseUrl = import.meta.env.VITE_BASE_URL;
-      const endpoint = cursor
-        ? `${apiBaseUrl}/user/all-users?cursor=${cursor}`
-        : `${apiBaseUrl}/user/all-users`;
+      const endpoint = `${apiBaseUrl}/user/all-users`;
 
       const response = await fetch(endpoint, {
         method: "GET",
@@ -114,8 +108,6 @@ export default function AdminDashboardUsers() {
 
       const result: AllUsersResponse = await response.json();
       setUsers(result.users || []);
-      setNextCursor(result.nextCursor ?? null);
-      setHasMore(!!result.nextCursor);
     } catch (err: any) {
       toast.error(err.message || "Failed to load users.", {
         id: "users-error",
@@ -129,29 +121,15 @@ export default function AdminDashboardUsers() {
   useEffect(() => {
     const load = async () => {
       setIsLoading(true);
-      await fetchUsers(currentCursor);
+      await fetchUsers();
       setIsLoading(false);
     };
     load();
-  }, [currentCursor]);
+  }, []);
 
-  const handleNext = async () => {
-    if (!nextCursor) return;
-    setIsNavigating(true);
-    setPrevCursors((prev) => [...prev, currentCursor].filter(Boolean) as string[]);
-    setCurrentCursor(nextCursor);
-    setTimeout(() => setIsNavigating(false), 300);
-  };
-
-  const handlePrev = async () => {
-    if (prevCursors.length === 0) return;
-    setIsNavigating(true);
-    const newStack = [...prevCursors];
-    const prev = newStack.pop();
-    setPrevCursors(newStack);
-    setCurrentCursor(prev);
-    setTimeout(() => setIsNavigating(false), 300);
-  };
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery]);
 
   const filteredUsers = users.filter(
     (user) =>
@@ -159,7 +137,17 @@ export default function AdminDashboardUsers() {
       user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
       (user.phoneNumber && user.phoneNumber.includes(searchQuery))
   );
-  const displayUsers = filteredUsers.slice(0, 10);
+  const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const displayUsers = filteredUsers.slice(startIndex, startIndex + itemsPerPage);
+
+  const handlePrev = () => {
+    setCurrentPage((p) => Math.max(p - 1, 1));
+  };
+
+  const handleNext = () => {
+    setCurrentPage((p) => Math.min(p + 1, totalPages));
+  };
 
   if (isLoading) {
     return (
@@ -176,8 +164,8 @@ export default function AdminDashboardUsers() {
   }
 
   return (
-    <div>
-      <div className="transition-all duration-300">
+    <div className="flex flex-col h-full">
+      <div className="flex-shrink-0">
         <button
           className="lg:hidden mb-4 p-2 bg-gray-800 text-white rounded-lg"
           onClick={openSidebar}
@@ -186,7 +174,7 @@ export default function AdminDashboardUsers() {
           <RiMenu2Line className="h-6 w-6" />
         </button>
 
-        <div className="mb-8">
+        <div className="mb-4">
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-50 tracking-tight">
@@ -202,7 +190,7 @@ export default function AdminDashboardUsers() {
           </div>
         </div>
 
-        <div className="relative mb-6">
+        <div className="relative mb-4">
           <div className="relative">
             <RiSearchLine className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-400 h-4 w-4" />
             <input
@@ -224,9 +212,11 @@ export default function AdminDashboardUsers() {
             )}
           </div>
         </div>
+      </div>
 
-        {filteredUsers.length > 0 ? (
-          <div className="space-y-3 max-h-[calc(100vh-22rem)] overflow-y-auto pr-1">
+      {filteredUsers.length > 0 ? (
+        <>
+          <div className="flex-1 overflow-y-auto space-y-3 pr-1 min-h-0">
             <p className="text-xs text-gray-400 dark:text-gray-500 font-medium">
               Showing {displayUsers.length} of {filteredUsers.length} user{filteredUsers.length !== 1 ? "s" : ""}
             </p>
@@ -235,7 +225,7 @@ export default function AdminDashboardUsers() {
               return (
                 <div
                   key={user.id}
-                  className={`group relative rounded-2xl bg-white dark:bg-gray-900/40 border border-blue-200/60 dark:border-blue-800/40 p-4 sm:p-5 transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 ${isNavigating ? "opacity-60" : ""}`}
+                  className="group relative rounded-2xl bg-white dark:bg-gray-900/40 border border-blue-200/60 dark:border-blue-800/40 p-4 sm:p-5 transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5"
                 >
                   <div className="flex items-start gap-4">
                     <div className={`shrink-0 h-12 w-12 rounded-xl bg-gradient-to-br ${getAvatarGradient(user.id)} flex items-center justify-center shadow-sm`}>
@@ -287,53 +277,53 @@ export default function AdminDashboardUsers() {
               );
             })}
           </div>
-        ) : (
-          <div className="flex flex-col items-center justify-center py-20 px-4">
-            <div className="p-4 rounded-full bg-blue-50 dark:bg-blue-950/30 mb-4 ring-1 ring-blue-200/50 dark:ring-blue-800/40">
-              <Users className="h-8 w-8 text-blue-400 dark:text-blue-500" />
-            </div>
-            {searchQuery ? (
-              <>
-                <p className="text-sm font-bold text-gray-600 dark:text-gray-200">No users match your search</p>
-                <p className="text-xs text-gray-500 dark:text-gray-300 mt-1">Try a different name, email or phone number</p>
-              </>
-            ) : (
-              <>
-                <p className="text-sm font-bold text-gray-600 dark:text-gray-200">No users found</p>
-                <p className="text-xs text-gray-500 dark:text-gray-300 mt-1">Users will appear here once they register</p>
-              </>
-            )}
-          </div>
-        )}
 
-        {(hasMore || prevCursors.length > 0) && filteredUsers.length > 0 && (
-          <div className="flex items-center justify-center gap-3 mt-8 mb-4">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handlePrev}
-              disabled={prevCursors.length === 0 || isNavigating}
-              className="text-xs border-blue-300/40 dark:border-blue-700/40 text-blue-700 dark:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/30"
-            >
-              <ArrowLeft className="h-3.5 w-3.5 mr-1" />
-              Previous
-            </Button>
-            <span className="text-xs text-gray-500 dark:text-gray-300 font-bold px-3">
-              {prevCursors.length + 1}
-            </span>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleNext}
-              disabled={!hasMore || isNavigating}
-              className="text-xs border-blue-300/40 dark:border-blue-700/40 text-blue-700 dark:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/30"
-            >
-              Next
-              <ArrowRight className="h-3.5 w-3.5 ml-1" />
-            </Button>
+          {totalPages > 1 && (
+            <div className="flex-shrink-0 flex items-center justify-center gap-3 pt-4 pb-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handlePrev}
+                disabled={currentPage === 1}
+                className="text-xs border-blue-300/40 dark:border-blue-700/40 text-blue-700 dark:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/30"
+              >
+                <ArrowLeft className="h-3.5 w-3.5 mr-1" />
+                Previous
+              </Button>
+              <span className="text-xs text-gray-500 dark:text-gray-300 font-bold px-3">
+                {currentPage} / {totalPages}
+              </span>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleNext}
+                disabled={currentPage === totalPages}
+                className="text-xs border-blue-300/40 dark:border-blue-700/40 text-blue-700 dark:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/30"
+              >
+                Next
+                <ArrowRight className="h-3.5 w-3.5 ml-1" />
+              </Button>
+            </div>
+          )}
+        </>
+      ) : (
+        <div className="flex-1 flex flex-col items-center justify-center py-20 px-4">
+          <div className="p-4 rounded-full bg-blue-50 dark:bg-blue-950/30 mb-4 ring-1 ring-blue-200/50 dark:ring-blue-800/40">
+            <Users className="h-8 w-8 text-blue-400 dark:text-blue-500" />
           </div>
-        )}
-      </div>
+          {searchQuery ? (
+            <>
+              <p className="text-sm font-bold text-gray-600 dark:text-gray-200">No users match your search</p>
+              <p className="text-xs text-gray-500 dark:text-gray-300 mt-1">Try a different name, email or phone number</p>
+            </>
+          ) : (
+            <>
+              <p className="text-sm font-bold text-gray-600 dark:text-gray-200">No users found</p>
+              <p className="text-xs text-gray-500 dark:text-gray-300 mt-1">Users will appear here once they register</p>
+            </>
+          )}
+        </div>
+      )}
       <Toaster
         position="top-right"
         reverseOrder={false}
